@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/2.1.0/mocha.css">
+    <!-- подключаем библиотеку Mocha -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/2.1.0/mocha.js"></script>
+    <!-- настраиваем Mocha: предстоит BDD-тестирование -->
+    <script>
+        mocha.setup('bdd');
+    </script>
+
+    <!-- подключаем chai -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/2.0.0/chai.js"></script>
+    <!-- в chai есть много всего, выносим assert в глобальную область -->
+    <script>
+        var assert = chai.assert;
+    </script>
+    <title>Tests</title>
+    <script src="Scripts/iqery.min.js"></script>
+    <script src="Scripts/dx.all.js"></script>
+     <!--<script src="Scripts/dx.aspnet.data.js"></script>
+    <script src="js/code2.js"></script>-->
+    <script src="js/orders.js"></script> 
+    <script src="index.js"></script>
+    <script src="js/filter.js"></script>
+    <link rel="stylesheet" type="text/css" href="Content/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="Content/grey.css" />
+</head>
+
+
+<body>  
+  <div id="mocha"></div>
+  <button onclick="run()" >runTests</button>
+  <div id="filter"></div>
+  <div id="grid"></div>
+  
+
+  
+    <script src="tests/test.js"></script>
+    <!-- запустить тесты! -->
+    <script>
+function run(){
+        CreateFilter();
+        mocha.run();
+}
+    </script>
+
+</body>
+
+</html>
