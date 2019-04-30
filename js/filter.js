@@ -68,8 +68,8 @@ function FilterField(dataGridColumn, input, checkBox, condition = '=') {
 
 var FilterElementsArray = new Array();
 
-function CreateFilter() {
-    var filtElem = document.getElementById("filter");
+function CreateFilter(id="filter") {
+    var filtElem = document.getElementById(id);
     filtElem.childNodes.length = 0;
     var dataGridInstance = $("#grid").dxDataGrid("instance");
     oldGridFilter = dataGridInstance.getCombinedFilter();
@@ -164,7 +164,7 @@ function FindByDateField(dataField) {
         if (FilterElementsArray[i].DataField == dataField) { return FilterElementsArray[i] }
     }
 }
-
+//Find by Filter
 function FilterFind() {
     collectiveFilter = new Array();
     var dataGrid = $("#grid").dxDataGrid("instance");
@@ -187,6 +187,5 @@ function FilterFind() {
     }
     dataGrid.refresh();
     console.time("x");
-
 }
 

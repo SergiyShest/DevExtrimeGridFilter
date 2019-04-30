@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>DevExtreme Demo</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+	<script src="../Scripts/iqery.min.js"></script>
+	<script src="../Scripts/dx.all.js"></script>
+	<script src="../Scripts/dx.aspnet.data.js"></script>
+	<link rel="stylesheet" type="text/css" href="../Content/dx.common.css" />
+	<link rel="stylesheet" type="text/css" href="../Content/grey.css" />
+	<link rel="stylesheet" type="text/css" href="style.css" />
+	<script>
+$(function() {
+    $("#popupContainer").dxPopup({
+        title: "Popup Title",
+        contentTemplate: function () {
+            return $("<p />").text("Popup content");
+        }
+    });
+    $("#showButton").dxButton({
+        text: "Show the Popup",
+        onClick: function () {
+            $("#popupContainer").dxPopup("show");
+            // === or ===
+            $("#popupContainer").dxPopup("toggle", true);
+        }
+    });
+    $("#hideButton").dxButton({
+        text: "Hide the Popup",
+        onClick: function () {
+            $("#popupContainer").dxPopup("hide");
+            // === or ===
+            $("#popupContainer").dxPopup("toggle", false);
+        }
+    });
+});</script>
+
+</head>
+<body>
+	<div id="popupContainer">
+		<p>Popup content</p>
+	</div>
+	<div id="buttonContainer">
+		<div id="showButton"></div>
+		<div id="hideButton"></div>
+	</div>
+</body>
+
+</html>

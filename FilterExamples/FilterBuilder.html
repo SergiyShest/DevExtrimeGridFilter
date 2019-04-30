@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>DevExtreme Demo</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <script src="../Scripts/iqery.min.js"></script>
+    <script src="../Scripts/dx.all.js"></script>
+    <script src="../Scripts/dx.aspnet.data.js"></script>
+ 
+    <link rel="stylesheet" type="text/css" href="../Content/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="../Content/grey.css" />
+    <link rel="stylesheet" type ="text/css" href ="style.css" />
+</head>
+<script>var filter = [
+        ["Category", "anyof", ["Automation", "Monitors"]],
+        "or",
+        [
+            ["Category", "=", "Televisions"],
+            "and",
+            ["Price", "between", [2000, 4000]]
+        ]
+    ],
+        categories = [
+            "Video Players",
+            "Televisions",
+            "Monitors",
+            "Projectors",
+            "Automation"
+        ],
+        fields = [{
+            dataField: "Name"
+        }, {
+            dataField: "Price",
+            dataType: "number",
+            format: "currency"
+        }, {
+            dataField: "Current_Inventory",
+            dataType: "number",
+            caption: "Inventory"
+        }, {
+            dataField: "Category",
+            filterOperations: ["=", "anyof"],
+            lookup: {
+                dataSource: categories
+            }
+        }
+        ];
+</script>
+<script>$(function () {
+        $("#filterBuilder").dxFilterBuilder({
+            fields: fields,
+            value: filter,
+            maxGroupLevel: 1,
+            groupOperations: ["and", "or"],
+            onValueChanged: updateTexts,
+            onInitialized: updateTexts,
+            customOperations: [{
+                name: "anyof",
+                caption: "In",
+                icon: "check",
+                editorTemplate: function (conditionInfo) {
+                    console.log(conditionInfo);
+                    return $("<div>").dxTagBox({
+                        value: conditionInfo.value,
+                        items: categories,
+                        onValueChanged: function (e) {
+                            conditionInfo.setValue(e.value && e.value.length ? e.value : null);
+                        },
+                        width: "auto"
+                    });
+                },
+                calculateFilterExpression: function (filterValue, field) {
+                    return filterValue && filterValue.length
+                        && Array.prototype.concat.apply([], filterValue.map(function (value) {
+                            return [[field.dataField, "=", value], "or"];
+                        })).slice(0, -1);
+                }
+            }]
+        });
+
+        function updateTexts(e) {
+            $("#filterText").text(formatValue(e.component.option("value")));
+            $("#dataSourceText").text(formatValue(e.component.getFilterExpression()));
+        }
+
+        function formatValue(value, spaces) {
+            if (value && Array.isArray(value[0])) {
+                var TAB_SIZE = 4;
+                spaces = spaces || TAB_SIZE;
+                return "[" + getLineBreak(spaces) + value.map(function (item) {
+                    return Array.isArray(item[0]) ? formatValue(item, spaces + TAB_SIZE) : JSON.stringify(item);
+                }).join("," + getLineBreak(spaces)) + getLineBreak(spaces - TAB_SIZE) + "]";
+            }
+            return JSON.stringify(value);
+        }
+
+        function getLineBreak(spaces) {
+            return "\r\n" + new Array(spaces + 1).join(" ");
+        }
+    });</script>
+<body class="dx-viewport">
+    <div class="demo-container">
+        <div id="filterBuilder"></div>
+        <div class="results">
+            <div>
+                <b>Value</b>
+                <pre id="filterText"></pre>
+            </div>
+            <div>
+                <b>DataSource's filter expression</b>
+                <pre id="dataSourceText"></pre>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
