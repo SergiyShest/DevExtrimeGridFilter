@@ -1,5 +1,6 @@
 var dataGrid;
 
+//объект который 
 function FilterField(dataGridColumn, input, checkBox, condition = '=') {
     this.column = dataGridColumn;
     this.DataField = dataGridColumn.dataField;
@@ -10,8 +11,8 @@ function FilterField(dataGridColumn, input, checkBox, condition = '=') {
     this.Input.onkeyup = ValueChanged;
     this.CheckBox = checkBox;
     this.CheckBox.Tag = this;
-    this.ApplayFilter = ApplayFilter;
-    this.ChangeChecked  = ChangeChecked;
+    this.ApplayFilter = ApplayFilter;//function применить фильтр
+    this.ChangeChecked  = ChangeChecked;//function изменилась галочка
     function ApplayFilter(collectiveFilter) {
         if (checkBox.checked) {
             filter = new Array();
@@ -28,7 +29,7 @@ function FilterField(dataGridColumn, input, checkBox, condition = '=') {
             collectiveFilter.push(filter);
         }
     }
-
+   //разделение по значения фильтра по запятым
     function filterCommaSplittedCodition(dataField, inpVal) {
         inpVal = inpVal.replace(/\s/g, '').replace(/,+/g, ',');//remove repeated commas and spaces
         var arr = inpVal.split(',');
@@ -44,7 +45,8 @@ function FilterField(dataGridColumn, input, checkBox, condition = '=') {
         }
         return filter;
     }
-//change CheckBox value
+//called from OUTside 
+//change CheckBox value depending on the InputBox.value  
     function ChangeChecked() {
         if (this.Input.value === "") {
             this.CheckBox.checked = false;
@@ -52,7 +54,8 @@ function FilterField(dataGridColumn, input, checkBox, condition = '=') {
             this.CheckBox.checked = true;
         }
     }
-
+//called from InputBox 
+//change CheckBox value depending on the InputBox.value 
     function ValueChanged(e) {
         if (this.value === "") {
             this.Tag.CheckBox.checked = false;
