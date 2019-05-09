@@ -1,3 +1,31 @@
+var colunmDescription=[
+    {
+        dataField: "ID",
+        width: 50,
+
+    },
+    {
+        dataField: "OrderNumber",
+        width: 130,
+        caption: "Invoice Number"
+    }, {
+        dataField: "OrderDate",
+        dataType: "date",
+        width: 160
+    }, 
+    "Employee", {
+        caption: "City",
+        dataField: "CustomerStoreCity"
+    }, {
+        caption: "State",
+        dataField: "CustomerStoreState"  
+    }, {
+        dataField: "SaleAmount",
+        alignment: "right",
+        format: "currency"
+    }
+];
+
 var orders = [{
     "ID" : 1,
     "OrderNumber" : 35703,

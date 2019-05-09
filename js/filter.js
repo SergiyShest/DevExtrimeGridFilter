@@ -71,33 +71,33 @@ function FilterField(dataGridColumn, input, checkBox, condition = '=') {
 
 var FilterElementsArray = new Array();
 
+
 function CreateFilter(id,columns) {
     var filtElem = document.getElementById(id);
     filtElem.childNodes.length = 0;
     var dataGridInstance = $("#grid").dxDataGrid("instance");
     oldGridFilter = dataGridInstance.getCombinedFilter();
 
-    //  oldGridFilterStr=  processFilter(dataGridInstance, oldGridFilter);
     const table = document.createElement('table');
     filtElem.appendChild(table);
-    //create fields
-    //for (var i = 0; i < dataGridInstance.columnCount(); i++) {
-  
-    //    var column = dataGridInstance.columnOption(i);//get column Discription
+
      for (var i = 0; i < columns.length; i++) {
     var column=columns[i];
 
     if(!column.filter){
-         continue;
+        // continue;
        }
-
         row = document.createElement('tr');
         table.appendChild(row);
 
       
-
+      var text=column.caption;
+      if(!text)
+      {
+       text= column.dataField;
+      }
         //label
-        textnode = document.createTextNode(column.caption);
+        textnode = document.createTextNode(text);
 
         //checkbox
         checkBox = document.createElement("input");
