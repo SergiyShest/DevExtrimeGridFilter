@@ -145,70 +145,7 @@ $(function () {
                 mode: "multiple",
                 allowSelectAll: true
             },
-            columns: [
-                {
-                    dataField: "OrderID",
-                    formItem: {
-                        visible: true
-                    },
-                    headerCellTemplate: $('<i style="color: black">ID</i>')
-                },
-                {
-                    caption: "Customer",
-                    calculateDisplayValue: "CustomerName",
-                    dataField: "CustomerID",
-                    //lookup: {
-                    //    valueExpr: "CustomerID",
-                    //    displayExpr: "ContactName",
-                    //    dataSource: {
-                    //        paginate: true,
-                    //        store: DevExpress.data.AspNet.createStore({
-                    //            key: "CustomerID",
-                    //            loadUrl: "Customers/Get"
-                    //        })
-                    //    }
-                    //}
-                },
-                {
-                    caption: "Employee",
-                    calculateDisplayValue: "EmployeeName",
-                    dataField: "EmployeeID",
-                    //lookup: {
-                    //    valueExpr: "EmployeeID",
-                    //    displayExpr: "FullName",
-                    //    dataSource: {
-                    //        paginate: true,
-                    //        store: DevExpress.data.AspNet.createStore({
-                    //            key: "EmployeeID",
-                    //            loadUrl: "Employees/Get"
-                    //        })
-                    //    }
-                    //}
-                },
-                { caption: "дата ", dataField: "OrderDate", dataType: "date" },
-                { dataField: "RequiredDate", dataType: "date" },
-                { dataField: "ShippedDate", dataType: "date" },
-                {
-                    dataField: "ShipVia",
-                    calculateDisplayValue: "ShipViaName",
-                    //lookup: {
-                    //    valueExpr: "ShipperID",
-                    //    displayExpr: "CompanyName",
-                    //    dataSource: {
-                    //        paginate: true,
-                    //        store: DevExpress.data.AspNet.createStore({
-                    //            key: "ShipperID",
-                    //            loadUrl: "Shippers/Get"
-                    //        })
-                    //    }
-                    //}
-                },
-                "Freight",
-                "ShipName",
-                "ShipAddress",
-                "ShipCity",
-                "ShipCountry"
-            ]
+            columns:colunmDescription, 
         });
 
   
