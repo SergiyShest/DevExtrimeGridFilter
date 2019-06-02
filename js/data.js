@@ -12,13 +12,11 @@
         caption: "Customer",
         calculateDisplayValue: "CustomerName",
         dataField: "CustomerID",
-
     },
     {
         caption: "Employee",
         calculateDisplayValue: "EmployeeName",
         dataField: "EmployeeID",
-
     },
     { caption: "дата ", dataField: "OrderDate", dataType: "date" },
     { dataField: "RequiredDate", dataType: "date" },
@@ -26,7 +24,6 @@
     {
         dataField: "ShipVia",
         calculateDisplayValue: "ShipViaName",
-
     },
    
     { caption: "Freight", dataField: "Freight" ,filter:true },

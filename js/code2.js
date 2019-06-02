@@ -22,6 +22,10 @@ function contentReady() {
 console.log(" time loading data")
     console.timeEnd("x");
 }
+function onRowClick(e) {
+    console.log(e);
+}
+
 
  //получение строки фильтров
     function processFilter(dataGridInstance, filter) {
@@ -113,7 +117,14 @@ $(function () {
             height: 500,
             remoteOperations: { paging: true, filtering: true, sorting: true, grouping: true, summary: true, groupPaging: true },
             keyExpr: "OrderID",
-            dataSource:dataEx,
+             dataSource: dataEx,
+       onRowClick: onRowClick,
+       export: {
+                enabled: true
+       },
+            groupPanel: {
+                visible: true
+            },
             //    dataSource:"../Orders/Get",
             //    dataSource: DevExpress.data.AspNet.createStore({
             //    key: "OrderID",

@@ -85,7 +85,7 @@ function CreateFilter(id,columns) {
     var column=columns[i];
 
     if(!column.filter){
-        // continue;
+         continue;
        }
         row = document.createElement('tr');
         table.appendChild(row);
@@ -99,15 +99,21 @@ function CreateFilter(id,columns) {
         //label
         textnode = document.createTextNode(text);
 
-        //checkbox
+        //create  checkbox
         checkBox = document.createElement("input");
         checkBox.setAttribute('type', 'checkbox');
 
         //input
         input = document.createElement("input")
+      
+        
+        if(column.filterType && column.filterType=='ComboBox')
+        {
+            input = document.createElement("select")
+    
+         }
         field = new FilterField(column, input, checkBox);
 
-        //FilterElementsArray.push({ DataField: column.dataField, DataType: column.dataType, Input: input, Check: checkBox });
         FilterElementsArray.push(field);
         createTableСell(row, textnode);
         createTableСell(row, checkBox);
