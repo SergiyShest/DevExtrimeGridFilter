@@ -26,6 +26,9 @@ function contentReady() {
 console.log(" time loading data")
     console.timeEnd("x");
 }
+function onRowClick(e) {
+    console.log(e);
+}
 
 
  //получение строки фильтров
