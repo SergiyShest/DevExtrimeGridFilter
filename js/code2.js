@@ -4,6 +4,10 @@
 
 //     grid.option("dataSource", dataSource);
 // }
+function onRowClick(e) {
+    console.log(e);
+}
+
 
 //
 function copyToClipboard(str) {
@@ -21,9 +25,6 @@ function contentReady() {
     dataGrid = $('#grid').dxDataGrid('instance');  
 console.log(" time loading data")
     console.timeEnd("x");
-}
-function onRowClick(e) {
-    console.log(e);
 }
 
 
@@ -78,20 +79,7 @@ $(function () {
         }
     }
 
-    // $("#testFilter").dxButton({
-    //     text: "проверка фильтра",
-    //     onClick: function (e) {
-    //         var grid = $("#grid").dxDataGrid("instance"),
-    //             filter = grid.getCombinedFilter();
-    //         alert(filter);
-    //         processFilter(grid, filter);
-    //         alert(filter);
-    //     }
-    // }).dxButton("instance");
-    // $("#test").dxButton({
-    //     text: "data",
-    //     onClick: setDataSource
-    // }).dxButton("instance");
+
 
 
     //поиск имени конолки по фильтру
@@ -125,16 +113,11 @@ $(function () {
             groupPanel: {
                 visible: true
             },
-            //    dataSource:"../Orders/Get",
-            //    dataSource: DevExpress.data.AspNet.createStore({
-            //    key: "OrderID",
-            //    loadUrl: "../Orders/Get",
-            //    insertUrl: "../Orders/Post",
-            //    updateUrl: "../Orders/Put",
-            //    deleteUrl: "../Orders/Delete"
-            //}),
-           // onContentReady:contentReady,
-            
+       stateStoring: {
+                enabled: true,
+                type: "localStorage",
+                storageKey: "storage"
+            },
             paging: {
                 pageSize: 30
             },
@@ -142,9 +125,8 @@ $(function () {
             onContextMenuPreparing: contextMenuPreparing,
             focusedRowEnabled: true,
             rowAlternationEnabled: true,
-            focusedRowKey: 3,
   
-             columnAutoWidth: true,
+             columnAutoWidth: false,
             filterRow: {
                 visible: true,
                 applyFilter: "auto"
