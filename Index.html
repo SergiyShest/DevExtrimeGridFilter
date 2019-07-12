@@ -46,7 +46,7 @@
 </script>
 
 <body>
-  
+
     <div class="modal" id="filterPopup">
         <div class="modal-content">
             <div class="modal-header">
@@ -64,8 +64,13 @@
     <button onclick='FilterStatus("Brazil")'>Brazil</button>
     <button onclick='FilterStatus("Germany")'>Germany</button>
 
- <button onclick="FilterClear()">FilterClear</button>
-   <button onclick="Edit()">редактировать</button>
+    <button onclick="FilterClear()">FilterClear</button>
+    <button onclick="Edit()">редактировать</button>
+    <div class="filter-container">
+        <div id="filterBuilder"></div>
+        <div id="apply"></div>
+        <div class="dx-clearfix"></div>
+    </div>
     <br />
     <div id="grid"></div>
 

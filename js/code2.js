@@ -107,7 +107,8 @@ $(function () {
    $("#grid").dxDataGrid({
             height: 500,
             remoteOperations: { paging: true, filtering: true, sorting: true, grouping: true, summary: true, groupPaging: true },
-            keyExpr: "OrderID",
+       keyExpr: "OrderID",
+       searchPanel: { visible: true },
              dataSource: dataEx,
        onRowClick: onRowClick,
        export: {
@@ -143,6 +144,18 @@ $(function () {
             },
             columns:colunmDescription, 
         });
+    $("#filterBuilder").dxFilterBuilder({
+        fields: colunmDescription,
+        value: filter
+    });
 
+    $("#apply").dxButton({
+        text: "Apply Filter",
+        type: "default",
+        onClick: function () {
+            var filter = $("#filterBuilder").dxFilterBuilder("instance").option("value");
+            $("#grid").dxDataGrid("instance").option("filterValue", filter);
+        },
+    });
   
     });
