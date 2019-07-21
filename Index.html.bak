@@ -3,31 +3,91 @@
 <html>
 
 <head>
-    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/2.1.0/mocha.css">
-    <!-- подключаем библиотеку Mocha -->
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/2.1.0/mocha.js"></script>-->
-    <!-- настраиваем Mocha: предстоит BDD-тестирование -->
-    <!--<script>
-        mocha.setup('bdd');
-    </script>-->
-    <!-- подключаем chai -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/2.0.0/chai.js"></script> -->
-    <!-- в chai есть много всего, выносим assert в глобальную область -->
-    <!--
-    <script>
-      var assert = chai.assert;
-    </script>-->
-    <title>eeee</title>
+    <title>Data grid example</title>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.2/jszip.min.js"></script>-->
+    <script src="Scripts/zip.js"></script>
     <script src="Scripts/iqery.min.js"></script>
     <script src="Scripts/dx.all.js"></script>
     <!--<script src="Scripts/dx.aspnet.data.js"></script>-->
     <script src="js/code2.js"></script>
     <script src="js/filter.js"></script>
     <script src="js/data.js"></script>
+
     <link rel="stylesheet" type="text/css" href="Content/dx.common.css" />
-    <link rel="stylesheet" type="text/css" href="Content/grey.css" />
+    <link rel="stylesheet" type="text/css" href="Content/dx.light.css" />
+    <link rel="stylesheet" type="text/css" href="Content/modal.CSS" />
 </head>
+
+
+<body>
+
+    <div class="modal" id="filterPopup">
+        <div class="modal-content">
+            <div class="modal-header">
+                header <span id="closeButton" align="right" class="modal-close" onclick="HideFilter()">X</span>
+            </div>
+            <div id="filter" style="background-color:lightblue"></div>
+        </div>
+    </div>
+
+    <br />
+    <button onclick="ShowFilter()">CreateFilter</button>
+    <button onclick="StrFilter()">Filter str</button>
+    <button onclick='FilterStatus("Switzerland")'>Switzerland</button>
+    <button onclick='FilterStatus("Belgium")'>Belgium</button>
+    <button onclick='FilterStatus("Brazil")'>Brazil</button>
+    <button onclick='FilterStatus("Germany")'>Germany</button>
+
+    <button onclick="FilterClear()">FilterClear</button>
+    <button onclick="Edit()">редактировать</button>
+    <div class="filter-container">
+        <div id="filterBuilder"></div>
+        <div id="apply"></div>
+        <div class="dx-clearfix"></div>
+    </div>
+    <br />
+    <div id="grid"></div>
+
+</body>
 <script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     function FilterStatus(status) {
         var dataGrid = $('#grid').dxDataGrid('instance');
@@ -47,36 +107,22 @@
         if (filterInit == false) {
             filterInit = true;
             CreateFilter("filter", colunmDescription);
+        } else {
+            var dataGrid = $('#grid').dxDataGrid('instance');
+            SetCombinedFilter(dataGrid);
         }
         var modal = document.getElementById('filterPopup');
         modal.style.display = "block";
 
     }
 
+    function StrFilter() {
+        var dataGrid = $('#grid').dxDataGrid('instance');
+        var f = dataGrid.getCombinedFilter();
+        alert(f);
+        dataGrid.clearFilter();
+        f = dataGrid.getCombinedFilter(false);
+        alert(f);
+    }
 </script>
-
-<body>
-    <span>Header</span>
-    <div class="modal" id="filterPopup">
-        <div class="modal-content">
-            <div class="modal-header">
-                header <span id="closeButton" align="right" class="modal-close" onclick="HideFilter()">X</span>
-            </div>
-            <div id="filter" style="background-color:lightblue"></div>
-        </div>
-    </div>
-
-    <br />
-    <button onclick="ShowFilter()">CreateFilter</button>
-
-    <button onclick='FilterStatus("Switzerland")'>Switzerland</button>
-    <button onclick='FilterStatus("Belgium")'>Belgium</button>
-    <button onclick='FilterStatus("Brazil")'>Brazil</button>
-    <button onclick='FilterStatus("Germany")'>Germany</button>
-
-    <br />
-    <div id="grid"></div>
-
-</body>
-
 </html>

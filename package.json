@@ -1,0 +1,31 @@
+{
+  "name": "DevExtrimeGridFilter",
+  "version": "1.0.0",
+  "description": "Customaze Filter for DevExtrimeGrid",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel js -d dist  --presets env --plugins transform-class-properties"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SergiyShest/DevExtrimeGridFilter.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SergiyShest/DevExtrimeGridFilter/issues"
+  },
+  "homepage": "https://github.com/SergiyShest/DevExtrimeGridFilter#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1"
+  }
+}

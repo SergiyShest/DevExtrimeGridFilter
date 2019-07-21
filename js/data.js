@@ -6,7 +6,8 @@
         },
         caption: "ID",
         headerCellTemplate: $('<i style="color: green">ID</i>'),
-        filter:true 
+         filter: true, 
+         width: 100 
     },
     {
         caption: "Customer",

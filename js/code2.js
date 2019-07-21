@@ -7,7 +7,18 @@
 function onRowClick(e) {
     console.log(e);
 }
+//window.addEventListener('resize', AutoSizeDataGrid);
 
+function AutoSizeDataGrid() {
+    var cont = document.getElementById('grid');
+    var dataGridRect = cont.getBoundingClientRect();
+    var height = document.documentElement.clientHeight - dataGridRect.top - 20;
+    $("#grid").dxDataGrid("instance").option("height", height);
+   // console.log(cont.offsetHeight);
+  
+    //  document.querySelector('.width').innerText = document.documentElement.clientWidth;
+    //  document.querySelector('.height').innerText = document.documentElement.clientHeight;
+}
 
 //
 function copyToClipboard(str) {
@@ -25,6 +36,7 @@ function contentReady() {
     dataGrid = $('#grid').dxDataGrid('instance');  
 console.log(" time loading data")
     console.timeEnd("x");
+    AutoSizeDataGrid();
 }
 function onRowClick(e) {
     console.log(e);
@@ -120,7 +132,7 @@ $(function () {
        stateStoring: {
                 enabled: true,
                 type: "localStorage",
-                storageKey: "storage"
+                storageKey: "storage1"
             },
             paging: {
                 pageSize: 30
@@ -129,7 +141,7 @@ $(function () {
             onContextMenuPreparing: contextMenuPreparing,
             focusedRowEnabled: true,
             rowAlternationEnabled: true,
-  
+           onContentReady: contentReady,
              columnAutoWidth: false,
             filterRow: {
                 visible: true,
@@ -143,7 +155,11 @@ $(function () {
                 allowSelectAll: true
             },
             columns:colunmDescription, 
-        });
+   });
+
+ var dataGridInstance = $("#grid").dxDataGrid("instance");
+ var filter = dataGridInstance.getCombinedFilter();
+
     $("#filterBuilder").dxFilterBuilder({
         fields: colunmDescription,
         value: filter
@@ -154,7 +170,15 @@ $(function () {
         type: "default",
         onClick: function () {
             var filter = $("#filterBuilder").dxFilterBuilder("instance").option("value");
-            $("#grid").dxDataGrid("instance").option("filterValue", filter);
+           
+            var dataGridInstance = $("#grid").dxDataGrid("instance");
+            var filtergr = dataGridInstance.getCombinedFilter();
+            if (filter) {
+                var resFilter=[filtergr ,'and',filter]
+ 
+                console.log(resFilter);
+                dataGridInstance.option("filterValue", resFilter);
+            }
         },
     });
   

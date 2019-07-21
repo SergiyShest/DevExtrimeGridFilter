@@ -1,10 +1,10 @@
 describe("FilterTests", function () {
 
     it("SimpleFilter", function () {
-        ClearFilter();
+        filerElem.ClearFilter();
         var oldGridFilter = ["ID", "=", "1112"]
-        SetOldFilter(oldGridFilter);
-        var fi = FindByDateField("ID");
+        filerElem.SetOldFilter(oldGridFilter);
+        var fi = filerElem.FindFilterElementsByDateField("ID");
 
         assert.isTrue("1112" === fi.Input.value);
     });
@@ -13,8 +13,8 @@ describe("FilterTests", function () {
         ClearFilter();
         var oldGridFilter = [["ID", "=", "1112"], 'and', ["SaleAmount", "=", "13"]];
         SetOldFilter(oldGridFilter);
-        var fi = FindByDateField("ID");
-         var fi2 = FindByDateField("SaleAmount");
+        var fi = FindFilterElementsByDateField("ID");
+        var fi2 = FindFilterElementsByDateField("SaleAmount");
        F1="1112" === fi.Input.value;
        F2="13" === fi2.Input.value;
         assert.isTrue(F1 && F2);
@@ -26,7 +26,7 @@ describe("FilterTests", function () {
         ClearFilter();
         var oldGridFilter = [["ID", "=", "1112"], 'or', ["ID", "=", "13"]];
         SetOldFilter(oldGridFilter);
-        var fi = FindByDateField("ID");
+        var fi = FindFilterElementsByDateField("ID");
        
       const F1="1112,13" === fi.Input.value;
     
@@ -42,8 +42,8 @@ describe("FilterTests", function () {
     ];
         SetOldFilter(oldGridFilter);
  
-        var fi = FindByDateField("ID");
-        var fi2 = FindByDateField("SaleAmount");
+        var fi = FindFilterElementsByDateField("ID");
+        var fi2 = FindFilterElementsByDateField("SaleAmount");
       F1="1112,13" === fi.Input.value;
       F2="17" === fi2.Input.value;
       assert.isTrue(F1 && F2);
@@ -52,7 +52,7 @@ describe("FilterTests", function () {
     it("checkBox", function () {
         ClearFilter();
         
-        var fi = FindByDateField("ID");
+        var fi = FindFilterElementsByDateField("ID");
         checkBefore=fi.CheckBox.checked;
         var oldGridFilter = ["ID", "=", "1112"]
         SetOldFilter(oldGridFilter);

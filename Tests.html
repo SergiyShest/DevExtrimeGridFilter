@@ -16,35 +16,39 @@
     <!-- в chai есть много всего, выносим assert в глобальную область -->
     <script>
         var assert = chai.assert;
+        var expect = chai.expect;
     </script>
     <title>Tests</title>
-    <script src="Scripts/iqery.min.js"></script>
+    <!--<script src="Scripts/iqery.min.js"></script>
     <script src="Scripts/dx.all.js"></script>
-     <!--<script src="Scripts/dx.aspnet.data.js"></script>
-    <script src="js/code2.js"></script>-->
-    <script src="js/orders.js"></script> 
-    <script src="index.js"></script>
-    <script src="js/filter.js"></script>
+    <script src="Scripts/dx.aspnet.data.js"></script>
+    <script src="js/code2.js"></script>
+    <script src="js/orders.js"></script>
+    <script src="index.js"></script>-->
+    <script src="js/filter.js"></script>-->
+    <!--<script src="dist/filter.js"></script>-->
     <link rel="stylesheet" type="text/css" href="Content/dx.common.css" />
     <link rel="stylesheet" type="text/css" href="Content/grey.css" />
 </head>
 
 
-<body>  
-  <div id="mocha"></div>
-  <button onclick="run()" >runTests</button>
-  <div id="filter"></div>
-  <div id="grid"></div>
-  
-
-  
-    <script src="tests/test.js"></script>
+<body>
+    <div id="mocha"></div>
+    <button onclick="run()">runTests</button>
+    <!-- <div id="filter"></div>
+     <div id="grid"></div>-->
+    <!-- <script src="tests/test.js"></script>-->
+    <script src="tests/FilterTests.js"></script>
     <!-- запустить тесты! -->
     <script>
-        function run(){
-        CreateFilter("filter",colunmDescription);
-        mocha.run();
-}
+        var filerElem;
+        function run() {
+            //dataGrid = $('#grid').dxDataGrid('instance');
+            //filerElem = document.getElementById("filter")
+            //filerElem= new FilterElements(dataGrid,filerElem);
+            //filerElem.CreateFilter( colunmDescription);
+            mocha.run();
+        }
     </script>
 
 </body>

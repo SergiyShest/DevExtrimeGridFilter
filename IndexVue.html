@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>DevExtreme Demo</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <script src="Scripts/iqery.min.js"></script>
+    <script src="Scripts/dx.all.js"></script>
+    <script src="Scripts/dx.aspnet.data.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="Content/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="Content/grey.css" />
+    <script src="js/data.js"></script>
+    <script src="js/Filter.js"></script>
+    <!--<link rel="stylesheet" type="text/css" href="styles.css" />-->
+    <script src="js/VueX.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+    <div id="App">
+        <div id="filter" style="background-color:lightblue"></div>
+        <br/>
+        <button onclick='ShowFilter()'>ShowFilter </button>
+        <button onclick='FilterStatus(["Switzerland"])'>Switzerland</button>
+        <button onclick='FilterStatus(["Belgium"])'>Belgium</button>
+        <button onclick='FilterStatus(["Brazil","Brazil"])'>Brazil</button>
+        <button onclick='FilterStatus("Germany")'>Germany</button>
+        <button onclick="FilterClear()">FilterClear</button>
+        <div id="grid"></div>
+    </div>
+</body>
+<script>
+
+    function FilterStatus(status) {
+        var dataGrid = $('#grid').dxDataGrid('instance');
+        var filter = ["ShipCountry", "=", status];
+        dataGrid.filter(filter);
+        dataGrid.refresh();
+        console.time("x");
+    }
+    var filterInit = false;
+
+    function HideFilter() {
+        var modal = document.getElementById('filterPopup');
+        modal.style.display = "none";
+    }
+    var filerElem; 
+    function ShowFilter() {
+        if (filterInit == false) {
+            filterInit = true;
+            dataGrid = $('#grid').dxDataGrid('instance');
+            filerElem = document.getElementById("filter")
+            filerElem= new FilterElements(dataGrid,filerElem);
+            filerElem.CreateFilter( colunmDescription);
+        } else {
+            //var dataGrid = $('#grid').dxDataGrid('instance');
+            filerElem.SetCombinedFilter();
+        }
+      //  var modal = document.getElementById('filterPopup');
+      //  modal.style.display = "block";
+
+    }
+
+    function FilterFind() {
+        filerElem.FilterFind();
+    } 
+
+    function StrFilter() {
+        var dataGrid = $('#grid').dxDataGrid('instance');
+        var f = dataGrid.getCombinedFilter();
+        alert(f);
+        dataGrid.clearFilter();
+        f = dataGrid.getCombinedFilter(false);
+        alert(f);
+    }
+</script>
+<script>
+    new Vue({
+        el: "#app",
+        components: {
+        },
+        data: {
+            res: '',
+            values: ['Vue.js', 'JavaScript'],
+            options: ['sssipt', 'Vue.js', 'JavaScript', 'Vue-Multiselect', 'JavaScript', 'Vuelidate']
+        },
+        computed: {
+            fullName: {
+                // геттер:
+                get: function () {
+                    return this.values.join(';');
+                },
+                // сеттер:
+                set: function (newValue) {
+
+                    this.values = newValue.split(';')
+                }
+            }
+        },
+        methods: {
+
+        }
+    });//.$mount('#app')
+
+</script>
+</html>

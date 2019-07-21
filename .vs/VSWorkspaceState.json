@@ -1,9 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Content",
-    "\\js"
+    "\\js",
+    "\\Scripts"
   ],
-  "SelectedNode": "\\Content\\modal.CSS",
+  "SelectedNode": "\\js\\code2.js",
   "PreviewInSolutionExplorer": false
 }
