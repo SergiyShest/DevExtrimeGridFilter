@@ -1,8 +1,7 @@
 class BaseFilterItem {
     isFilterItem;
-    isFilterConditionItem;
+    isFilterGroupItem;
 }
-
 
 class FilterItem extends BaseFilterItem {
 
@@ -15,6 +14,7 @@ class FilterItem extends BaseFilterItem {
     * @param {string} value значение
     */
     constructor(name, condition, value) {
+        super();
         this.Name = name;
         this.Condition = condition;
         this.Value = value;
@@ -25,13 +25,14 @@ class FilterItem extends BaseFilterItem {
     }
 }
 
-class FilterConditionItem extends BaseFilterItem {
+class FilterGroupItem extends BaseFilterItem {
 
     GroupName;
     Items;
     constructor(name) {
+        super();
         if (name.length == 0) throw "Имя не может быть пустым"
-        this.GroupName = name;
+        this.GroupName = name.toLowerCase().trim();
         this.Items = new Array();
     }
     GetResultArrey() {
@@ -69,23 +70,25 @@ class FilterHelper {
     }
     //создание объектного представления фильтра(конвертрация массива в коллекцию элементов фильтра)
     static CreateFilterItems(filtrArr) {
-        var rezItem;
-        if (FilterHelper.GetName(filtrArr)) {//простое выражение 
-            rezItem = new FilterItem(filtrArr[0], filtrArr[1], filtrArr[2]);
-        }
-        else {
-            var ch1 = FilterHelper.CreateFilterItems(filtrArr[0]);
-            var condName = filtrArr[1];//имя
-            if (typeof (condName) != "string") {
-                throw "Не корректный фильтр (не получилось прочесть имя)";
+        var rezItem = null;
+        if (filtrArr.length > 0) {
+            if (FilterHelper.GetName(filtrArr)) {//простое выражение 
+                rezItem = new FilterItem(filtrArr[0], filtrArr[1], filtrArr[2]);
             }
-            rezItem = new FilterConditionItem(condName);//добавляем имя
-            rezItem.Items.push(ch1);//первое выражение
-            for (var i = 1; i < filtrArr.length; i = i + 2) {
-                if (filtrArr.length < i + 2) throw "Не корректный фильтр (длина)";
-                if (condName !== filtrArr[i]) throw "Не корректный фильтр. В одном выражении разные операторы(" + condName + " и " + filtrArr[i];
-                var ch2 = FilterHelper.CreateFilterItems(filtrArr[i + 1]);
-                rezItem.Items.push(ch2);
+            else {
+                var ch1 = FilterHelper.CreateFilterItems(filtrArr[0]);
+                var condName = filtrArr[1];//имя
+                if (typeof (condName) != "string") {
+                    throw "Не корректный фильтр (не получилось прочесть имя)";
+                }
+                rezItem = new FilterGroupItem(condName);//создаю результирующее выражение
+                rezItem.Items.push(ch1);//первое выражение
+                for (var i = 1; i < filtrArr.length; i = i + 2) {
+                    if (filtrArr.length < i + 2) throw "Не корректный фильтр (длина)";
+                    if (condName !== filtrArr[i]) throw "Не корректный фильтр. В одном выражении разные операторы(" + condName + " и " + filtrArr[i];
+                    var ch2 = FilterHelper.CreateFilterItems(filtrArr[i + 1]);
+                    rezItem.Items.push(ch2);
+                }
             }
         }
         return rezItem;
@@ -100,38 +103,74 @@ class FilterHelper {
     static ApplyInCon(oldFilter, condField, condValues) {
 
         var fi = FilterHelper.CreateFilterItems(oldFilter);//преобразование массива в объектный тип
-        fi.Remove(condField);//удаление старых значений
-        if (condValues.length > 0)//если есть чего добавлять
-        {
-            if (condValues.length == 1) {//если добавлять одно значение
-                var filter = new FilterItem(condField, "=", status)
-                if (typeof fi == 'FilterItem') {
-                    var newfi = new FilterConditionItem('And')
-                    newfi.Items.push(fi);
-                    newfi.Items.push(filter);
-                } else {
-                    if (fi.Condition == 'And') {
-                        fi.Items.push(filter)
-                    } else {
-                        throw new "notImplimented";
-                    }
+        if (fi != null) {//удаление старых значений
+            if (fi.constructor.name == 'FilterItem') {
+                if (fi.Name == condField) {
+                    fi = null;
                 }
             } else {
-                if (fi.Condition == 'And') {
-                    var newOr = new FilterConditionItem('Or')
-                    for (var i = 0; i < condValues.length; i++) {
-                        var status = statusAr[i];
-                        var filter = new FilterItem(condField, "=", status)
-                        fi.Items.push(filter)
+                fi.Remove(condField);
+            }
+        }
+
+        if (fi == null) {//старый фильтр пустой или стал пустым после удаления предыдущих значений
+            if (condValues.length == 1) {
+                fi = new FilterItem(condField, "=", condValues[0]);
+            } else {
+                fi = CreateOr(condField, condValues);
+            }
+        } else
+        {
+
+            if (condValues.length > 0)//если есть чего добавлять
+            {
+                if (condValues.length == 1) {//если добавлять одно значение
+                    var filterItem = new FilterItem(condField, "=", condValues[0])//
+                    if (fi.constructor.name == 'FilterItem') {//если предыдущее выражение было простым
+                        fi = CreateAnd([fi, filterItem]);
+                    } else {
+                        if (fi.GroupName == 'and') {//если предыдущее выражение было групповым и имя группы 'and'
+                            fi.Items.push(filterItem)//добавляю новое выражение в группу
+                        } else {
+                            throw "notImplimented";
+                        }
                     }
-                    fi.Condition.push(newOr);
-                }
-                else {
-                    throw new "notImplimented";
+                } else {
+                       var newOr = CreateOr(condField, condValues)
+                    if (fi.constructor.name == 'FilterItem') {//если предыдущее выражение было простым
+                        fi = CreateAnd([fi, newOr]);
+                      } else
+
+                    if (fi.GroupName == 'and') {//если предыдущее выражение было групповым и имя группы 'and'
+                       
+                        fi.Items.push(newOr);
+                    }
+                    else {
+                        throw "notImplimented";
+                    }
                 }
             }
         }
         return fi.GetResultArrey();
+
+        function CreateOr(condField, condValues) {
+            var newOr = new FilterGroupItem('or')
+            for (var i = 0; i < condValues.length; i++) {
+                var status = condValues[i];
+                var filter = new FilterItem(condField, "=", status)
+                newOr.Items.push(filter)
+            }
+            return newOr;
+        }
+        function CreateAnd(items) {
+        var newfi = new FilterGroupItem('and')//создаю результирующую группу 'and'
+            for (var i = 0; i < items.length;i++)
+            {
+               var item = items[i];
+                newfi.Items.push(item);
+            }
+            return newfi;
+        }
 
     }
 
@@ -139,9 +178,11 @@ class FilterHelper {
         @param { Array<string | Array>} filterArr массив параметров
     */
     static GetName(filterArr) {
-        if (filterArr.length == 3 && typeof filterArr[0] == 'string') {
-            return filterArr[0];
-        }
+        // var arrType = typeof filterArr;
+        if (typeof (filterArr) !== "undefined" && typeof (filterArr.length) !== "undefined")
+            if (filterArr.length == 3 && typeof filterArr[0] == 'string') {
+                return filterArr[0];
+            }
         return null;
     }
 
