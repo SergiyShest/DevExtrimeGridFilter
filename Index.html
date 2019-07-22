@@ -39,7 +39,7 @@
     <button onclick='FilterStatus(["Brazil"])'>Brazil</button>
     <button onclick='FilterStatus(["Germany","Brazil"])'>Germany+>Brazil</button>
 
-    <button onclick='FilterStatus()'>FilterClear</button>
+    <button onclick='FilterStatus([])'>FilterClear</button>
     <button onclick="Edit()">редактировать</button>
     <div class="filter-container">
         <div id="filterBuilder"></div>
@@ -54,10 +54,9 @@
  var dataGrid = $('#grid').dxDataGrid('instance');
     function FilterStatus(statusAr) {
 var oldFilter = dataGrid.getCombinedFilter();
-        var arr = FilterHelper.DeleteFields(oldFilter, "ShipCountry");
-
-      
         
+       var filter = FilterHelper.ApplyInCon(oldFilter, "ShipCountry", statusAr)
+
         dataGrid.filter(filter);
         dataGrid.refresh();
         console.time("x");

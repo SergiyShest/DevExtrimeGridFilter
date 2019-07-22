@@ -63,15 +63,20 @@ class FilterGroupItem extends BaseFilterItem {
 class FilterHelper {
     //убирает лишние скобки
     static Normalaze(filtrArr) {
-        if ('Items' in filtrArr && filtrArr.Items.length == 1) {
-            return FilterHelper.Normalaze(filtrArr.Items[0])
+        if ('Items' in filtrArr) {
+            if (filtrArr.Items.length == 0) {
+                return null;
+            }
+            if (filtrArr.Items.length == 1) {
+                return FilterHelper.Normalaze(filtrArr.Items[0])
+            }
         }
         return filtrArr
     }
     //создание объектного представления фильтра(конвертрация массива в коллекцию элементов фильтра)
     static CreateFilterItems(filtrArr) {
         var rezItem = null;
-        if (filtrArr.length > 0) {
+        if (filtrArr != null && 'length' in filtrArr && filtrArr.length > 0) {
             if (FilterHelper.GetName(filtrArr)) {//простое выражение 
                 rezItem = new FilterItem(filtrArr[0], filtrArr[1], filtrArr[2]);
             }
@@ -101,8 +106,10 @@ class FilterHelper {
      * @return {Array<string|Array>} Новый массив фильтров грида
     */
     static ApplyInCon(oldFilter, condField, condValues) {
-
-        var fi = FilterHelper.CreateFilterItems(oldFilter);//преобразование массива в объектный тип
+        var fi = null;
+        if (typeof oldFilter !== 'undefined') {
+            fi = FilterHelper.CreateFilterItems(oldFilter);//преобразование массива в объектный тип
+        }
         if (fi != null) {//удаление старых значений
             if (fi.constructor.name == 'FilterItem') {
                 if (fi.Name == condField) {
@@ -110,6 +117,7 @@ class FilterHelper {
                 }
             } else {
                 fi.Remove(condField);
+                fi = FilterHelper.Normalaze(fi);
             }
         }
 
@@ -119,9 +127,7 @@ class FilterHelper {
             } else {
                 fi = CreateOr(condField, condValues);
             }
-        } else
-        {
-
+        } else {
             if (condValues.length > 0)//если есть чего добавлять
             {
                 if (condValues.length == 1) {//если добавлять одно значение
@@ -132,25 +138,27 @@ class FilterHelper {
                         if (fi.GroupName == 'and') {//если предыдущее выражение было групповым и имя группы 'and'
                             fi.Items.push(filterItem)//добавляю новое выражение в группу
                         } else {
-                            throw "notImplimented";
+                            throw "notImplimented " + fi.GroupName;
                         }
                     }
                 } else {
-                       var newOr = CreateOr(condField, condValues)
+                    var newOr = CreateOr(condField, condValues)
                     if (fi.constructor.name == 'FilterItem') {//если предыдущее выражение было простым
                         fi = CreateAnd([fi, newOr]);
-                      } else
+                    } else
 
-                    if (fi.GroupName == 'and') {//если предыдущее выражение было групповым и имя группы 'and'
-                       
-                        fi.Items.push(newOr);
-                    }
-                    else {
-                        throw "notImplimented";
-                    }
+                        if (fi.GroupName == 'and') {//если предыдущее выражение было групповым и имя группы 'and'
+
+                            fi.Items.push(newOr);
+                        }
+                        else {
+                            throw "notImplimented 2 ==" + fi.GroupName;
+                        }
                 }
             }
         }
+        fi = FilterHelper.Normalaze(fi);
+        if (fi == null) return null; 
         return fi.GetResultArrey();
 
         function CreateOr(condField, condValues) {
@@ -163,10 +171,9 @@ class FilterHelper {
             return newOr;
         }
         function CreateAnd(items) {
-        var newfi = new FilterGroupItem('and')//создаю результирующую группу 'and'
-            for (var i = 0; i < items.length;i++)
-            {
-               var item = items[i];
+            var newfi = new FilterGroupItem('and')//создаю результирующую группу 'and'
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
                 newfi.Items.push(item);
             }
             return newfi;
