@@ -1,4 +1,4 @@
-﻿
+"use strict";
 
 //     var grid = $("#grid").dxDataGrid("instance");
 
@@ -14,22 +14,21 @@ function AutoSizeDataGrid() {
     var dataGridRect = cont.getBoundingClientRect();
     var height = document.documentElement.clientHeight - dataGridRect.top - 20;
     $("#grid").dxDataGrid("instance").option("height", height);
-   // console.log(cont.offsetHeight);
-  
+    // console.log(cont.offsetHeight);
+
     //  document.querySelector('.width').innerText = document.documentElement.clientWidth;
     //  document.querySelector('.height').innerText = document.documentElement.clientHeight;
 }
 
 //
 function copyToClipboard(str) {
-    const el = document.createElement('textarea');
+    var el = document.createElement('textarea');
     el.value = str;
     document.body.appendChild(el);
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
 };
-
 
 //write time loading data
 function contentReady() {
@@ -42,22 +41,18 @@ function onRowClick(e) {
     console.log(e);
 }
 
-
- //получение строки фильтров
-    function processFilter(dataGridInstance, filter) {
-        if ($.isArray(filter)) {
-            if ($.isFunction(filter[0])) {
-                filter[0] = getColumnFieldName(dataGridInstance, filter[0]);
-            }
-            else {
-                for (var i = 0; i < filter.length; i++) {
-                    processFilter(dataGridInstance, filter[i]);
-                }
+//получение строки фильтров
+function processFilter(dataGridInstance, filter) {
+    if ($.isArray(filter)) {
+        if ($.isFunction(filter[0])) {
+            filter[0] = getColumnFieldName(dataGridInstance, filter[0]);
+        } else {
+            for (var i = 0; i < filter.length; i++) {
+                processFilter(dataGridInstance, filter[i]);
             }
         }
     }
-
-
+}
 
 //добавление пункта меню копировать
 function contextMenuPreparing(e) {
@@ -68,9 +63,11 @@ function contextMenuPreparing(e) {
             var ind = e.column.dataField;
             e.items.push({
                 text: "Copy",
-                onItemClick: function () {
+                onItemClick: function onItemClick() {
                     var res = '';
-                    for (i = 0; i < selectedRows.length; i++) { res += selectedRows[i][ind] + ',' }
+                    for (i = 0; i < selectedRows.length; i++) {
+                        res += selectedRows[i][ind] + ',';
+                    }
                     copyToClipboard(res.trim(','));
                 }
             });
@@ -85,8 +82,7 @@ $(function () {
         if ($.isArray(filter)) {
             if ($.isFunction(filter[0])) {
                 filter[0] = getColumnFieldName(dataGridInstance, filter[0]);
-            }
-            else {
+            } else {
                 for (var i = 0; i < filter.length; i++) {
                     processFilter(dataGridInstance, filter[i]);
                 }
@@ -94,13 +90,9 @@ $(function () {
         }
     }
 
-
-
-
     //поиск имени конолки по фильтру
     function getColumnFieldName(dataGridInstance, getter) {
-        var column,
-            i;
+        var column, i;
 
         if ($.isFunction(getter)) {
             for (i = 0; i < dataGridInstance.columnCount(); i++) {
@@ -109,56 +101,54 @@ $(function () {
                     return column.dataField;
                 }
             }
-        }
-        else {
+        } else {
             return getter;
         }
     }
 
+    $("#grid").dxDataGrid({
+        height: 500,
+        remoteOperations: { paging: true, filtering: true, sorting: true, grouping: true, summary: true, groupPaging: true },
+        keyExpr: "OrderID",
+        searchPanel: { visible: true },
+        dataSource: dataEx,
+        onRowClick: onRowClick,
+        export: {
+            enabled: true
+        },
+        groupPanel: {
+            visible: true
+        },
+        stateStoring: {
+            enabled: true,
+            type: "localStorage",
+            storageKey: "storage1"
+        },
+        paging: {
+            pageSize: 30
+        },
 
-   $("#grid").dxDataGrid({
-            height: 500,
-            remoteOperations: { paging: true, filtering: true, sorting: true, grouping: true, summary: true, groupPaging: true },
-       keyExpr: "OrderID",
-       searchPanel: { visible: true },
-             dataSource: dataEx,
-       onRowClick: onRowClick,
-       export: {
-                enabled: true
-       },
-            groupPanel: {
-                visible: true
-            },
-       stateStoring: {
-                enabled: true,
-                type: "localStorage",
-                storageKey: "storage1"
-            },
-            paging: {
-                pageSize: 30
-            },
+        onContextMenuPreparing: contextMenuPreparing,
+        focusedRowEnabled: true,
+        rowAlternationEnabled: true,
+        onContentReady: contentReady,
+        columnAutoWidth: false,
+        filterRow: {
+            visible: true,
+            applyFilter: "auto"
+        },
 
-            onContextMenuPreparing: contextMenuPreparing,
-            focusedRowEnabled: true,
-            rowAlternationEnabled: true,
-           onContentReady: contentReady,
-             columnAutoWidth: false,
-            filterRow: {
-                visible: true,
-                applyFilter: "auto"
-            },
+        headerFilter: { visible: true },
+        filterPanel: { visible: true },
+        selection: {
+            mode: "multiple",
+            allowSelectAll: true
+        },
+        columns: colunmDescription
+    });
 
-            headerFilter: { visible: true },
-            filterPanel: { visible: true },
-            selection: {
-                mode: "multiple",
-                allowSelectAll: true
-            },
-            columns:colunmDescription, 
-   });
-
- var dataGridInstance = $("#grid").dxDataGrid("instance");
- var filter = dataGridInstance.getCombinedFilter();
+    var dataGridInstance = $("#grid").dxDataGrid("instance");
+    var filter = dataGridInstance.getCombinedFilter();
 
     $("#filterBuilder").dxFilterBuilder({
         fields: colunmDescription,
@@ -168,18 +158,17 @@ $(function () {
     $("#apply").dxButton({
         text: "Apply Filter",
         type: "default",
-        onClick: function () {
+        onClick: function onClick() {
             var filter = $("#filterBuilder").dxFilterBuilder("instance").option("value");
-           
+
             var dataGridInstance = $("#grid").dxDataGrid("instance");
             var filtergr = dataGridInstance.getCombinedFilter();
             if (filter) {
-                var resFilter=[filtergr ,'and',filter]
- 
+                var resFilter = [filtergr, 'and', filter];
+
                 console.log(resFilter);
                 dataGridInstance.option("filterValue", resFilter);
             }
-        },
+        }
     });
-  
-    });
+});
