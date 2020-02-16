@@ -7,8 +7,10 @@
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.2/jszip.min.js"></script>-->
     <script src="Scripts/zip.js"></script>
     <script src="Scripts/iqery.min.js"></script>
-    <script src="Scripts/dx.all.js"></script>
-    <!--<script src="Scripts/dx.aspnet.data.js"></script>-->
+   <!-- <script src="Scripts/dx.all.js"></script>
+   
+    <script src="Scripts/dx.aspnet.data.js"></script>-->
+      <script src="https://cdn3.devexpress.com/jslib/19.2.6/js/dx.all.js"></script>
     <script src="js/code2.js"></script>
     <script src="dist/filter.js"></script>
     <script src="js/FilterControls.js"></script>
@@ -17,6 +19,8 @@
     <link rel="stylesheet" type="text/css" href="Content/dx.common.css" />
     <link rel="stylesheet" type="text/css" href="Content/dx.light.css" />
     <link rel="stylesheet" type="text/css" href="Content/modal.CSS" />
+    <!--<script src="https://cdn3.devexpress.com/jslib/19.2.6/js/localization/dx.messages.ru.js"></script>-->
+    <script src="Scripts/localization.js"></script>
 </head>
 
 
@@ -34,12 +38,13 @@
     <br />
     <button onclick="ShowFilter()">CreateFilter</button>
     <button onclick="StrFilter()">Filter str</button>
-    <button onclick='FilterStatus(["Switzerland"])'>Switzerland</button>
-    <button onclick='FilterStatus(["Belgium"])'>Belgium</button>
-    <button onclick='FilterStatus(["Brazil"])'>Brazil</button>
-    <button onclick='FilterStatus(["Germany","Brazil"])'>Germany+>Brazil</button>
+    <button onclick='setFilter([10553,10561,10563,10583],"OrderID")'>id</button>    
+    <button onclick='setFilter(["Switzerland"],"ShipCountry")'>Switzerland</button>
+    <button onclick='setFilter(["Belgium"],"ShipCountry")'>Belgium</button>
+    <button onclick='setFilter(["Brazil"],"ShipCountry")'>Brazil</button>
+    <button onclick='setFilter(["Germany","Brazil"],"ShipCountry")'>Germany+>Brazil</button>
 
-    <button onclick='FilterStatus([])'>FilterClear</button>
+    <button onclick='clearFilter()'>FilterClear</button>
     <button onclick="Edit()">редактировать</button>
     <div class="filter-container">
         <div id="filterBuilder"></div>
@@ -50,18 +55,18 @@
     <div id="grid"></div>
 </body>
 <script>
-
- var dataGrid = $('#grid').dxDataGrid('instance');
-    function FilterStatus(statusAr) {
-var oldFilter = dataGrid.getCombinedFilter();
-        
-       var filter = FilterHelper.ApplyInCon(oldFilter, "ShipCountry", statusAr)
+ DevExpress.localization.locale(navigator.language);
+ 
+    
+    function setFilter(valueAr,fieldName) {
+       var oldFilter = dataGrid.getCombinedFilter();
+        var filter = FilterHelper.ApplyInCon(oldFilter, fieldName, valueAr)
 
         dataGrid.filter(filter);
         dataGrid.refresh();
         console.time("x");
     }
-   function FilterStatusOld(status) {
+   function setFilterOld(status) {
        
         var filter = ["ShipCountry", "=", status];
         dataGrid.filter(filter);
@@ -95,13 +100,11 @@ var oldFilter = dataGrid.getCombinedFilter();
         filerElem.FilterFind();
     } 
 
-    function StrFilter() {
-        var dataGrid = $('#grid').dxDataGrid('instance');
-        var f = dataGrid.getCombinedFilter();
-        alert(f);
+    function clearFilter() {
         dataGrid.clearFilter();
-        f = dataGrid.getCombinedFilter(false);
-        alert(f);
+      //  f = dataGrid.getCombinedFilter(false);
+dataGrid.refresh()
     }
+    var dataGrid = $('#grid').dxDataGrid('instance');
 </script>
 </html>

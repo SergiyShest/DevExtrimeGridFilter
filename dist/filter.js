@@ -186,7 +186,11 @@ var FilterHelper = function () {
                                     //если предыдущее выражение было групповым и имя группы 'and'
                                     fi.Items.push(filterItem); //добавляю новое выражение в группу
                                 } else {
-                                    throw "notImplimented " + fi.GroupName;
+                                    if (fi.GroupName == 'or') {
+                                        fi = CreateAnd([fi, newOr]);
+                                    } else { 
+                                        throw "notImplimented " + fi.GroupName;
+                                    }
                                 }
                             }
                         } else {
@@ -199,7 +203,11 @@ var FilterHelper = function () {
 
                                 fi.Items.push(newOr);
                             } else {
-                                throw "notImplimented 2 ==" + fi.GroupName;
+                                if (fi.GroupName == 'or') {
+                                    fi = CreateAnd([fi, newOr]);
+                                } else { 
+                                    throw "notImplimented " + fi.GroupName;
+                                }
                             }
                         }
                     }

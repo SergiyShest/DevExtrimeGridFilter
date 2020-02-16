@@ -1,13 +1,22 @@
 class BaseFilterItem {
-    isFilterItem;
-    isFilterGroupItem;
+
+    get isFilterItem() { return this._name; }
+    set isFilterItem(val) { this._name = val; }
+
+    get isFilterGroupItem() { return this._namex; }
+    set isFilterGroupItem(val) { this._namex; }
 }
 
 class FilterItem extends BaseFilterItem {
 
-    Name;
-    Condition;
-    Value;
+    get Name() { return this._Name; }
+    set Name(val) { this._Name = val; }
+
+    get Condition() { return this._Condition; }
+    set Condition(val) { this._Condition = val; }
+
+    get Value() { return this._Value; }
+    set Value(val) { this._Value = val; }
     /**
     * @param {string} name имя переменной
     * @param {string} condition условие
@@ -27,8 +36,12 @@ class FilterItem extends BaseFilterItem {
 
 class FilterGroupItem extends BaseFilterItem {
 
-    GroupName;
-    Items;
+    get GroupName() { return this._GroupName; }
+    set GroupName(val) { this._GroupName = val; }
+
+    get Items() { return this._Items; }
+    set Items(val) { this._Items = val; }
+
     constructor(name) {
         super();
         if (name.length == 0) throw "Имя не может быть пустым"
@@ -61,6 +74,8 @@ class FilterGroupItem extends BaseFilterItem {
 }
 
 class FilterHelper {
+
+    constructor() { }
     //убирает лишние скобки
     static Normalaze(filtrArr) {
         if ('Items' in filtrArr) {
@@ -73,6 +88,7 @@ class FilterHelper {
         }
         return filtrArr
     }
+
     //создание объектного представления фильтра(конвертрация массива в коллекцию элементов фильтра)
     static CreateFilterItems(filtrArr) {
         var rezItem = null;
@@ -101,7 +117,7 @@ class FilterHelper {
 
     /*ссс*
      * @param {Array<string|Array>} oldFilter стараый массив фильтров грида 
-     * @param {string} condField Имя поле
+     * @param {string} condField Имя поля
      * @param {Array<string>} condValues Массив значений
      * @return {Array<string|Array>} Новый массив фильтров грида
     */
@@ -138,7 +154,11 @@ class FilterHelper {
                         if (fi.GroupName == 'and') {//если предыдущее выражение было групповым и имя группы 'and'
                             fi.Items.push(filterItem)//добавляю новое выражение в группу
                         } else {
-                            throw "notImplimented " + fi.GroupName;
+                            if (fi.GroupName == 'or') {
+                                fi = CreateAnd([fi, newOr]);
+                            } else { 
+                                throw "notImplimented " + fi.GroupName;
+                            }
                         }
                     }
                 } else {
@@ -158,7 +178,7 @@ class FilterHelper {
             }
         }
         fi = FilterHelper.Normalaze(fi);
-        if (fi == null) return null; 
+        if (fi == null) return null;
         return fi.GetResultArrey();
 
         function CreateOr(condField, condValues) {
