@@ -8,18 +8,67 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var BaseFilterItem = function BaseFilterItem() {
-    _classCallCheck(this, BaseFilterItem);
-};
+var BaseFilterItem = function () {
+    function BaseFilterItem() {
+        _classCallCheck(this, BaseFilterItem);
+    }
+
+    _createClass(BaseFilterItem, [{
+        key: 'isFilterItem',
+        get: function get() {
+            return this._name;
+        },
+        set: function set(val) {
+            this._name = val;
+        }
+    }, {
+        key: 'isFilterGroupItem',
+        get: function get() {
+            return this._namex;
+        },
+        set: function set(val) {
+            this._namex;
+        }
+    }]);
+
+    return BaseFilterItem;
+}();
 
 var FilterItem = function (_BaseFilterItem) {
     _inherits(FilterItem, _BaseFilterItem);
 
-    /**
-    * @param {string} name имя переменной
-    * @param {string} condition условие
-    * @param {string} value значение
-    */
+    _createClass(FilterItem, [{
+        key: 'Name',
+        get: function get() {
+            return this._Name;
+        },
+        set: function set(val) {
+            this._Name = val;
+        }
+    }, {
+        key: 'Condition',
+        get: function get() {
+            return this._Condition;
+        },
+        set: function set(val) {
+            this._Condition = val;
+        }
+    }, {
+        key: 'Value',
+        get: function get() {
+            return this._Value;
+        },
+        set: function set(val) {
+            this._Value = val;
+        }
+        /**
+        * @param {string} name имя переменной
+        * @param {string} condition условие
+        * @param {string} value значение
+        */
+
+    }]);
+
     function FilterItem(name, condition, value) {
         _classCallCheck(this, FilterItem);
 
@@ -37,6 +86,11 @@ var FilterItem = function (_BaseFilterItem) {
         value: function GetResultArrey() {
             return [this.Name, this.Condition, this.Value];
         }
+    }, {
+        key: 'GetString',
+        value: function GetString() {
+            return this.Name + this.Condition + this.Value;
+        }
     }]);
 
     return FilterItem;
@@ -44,6 +98,24 @@ var FilterItem = function (_BaseFilterItem) {
 
 var FilterGroupItem = function (_BaseFilterItem2) {
     _inherits(FilterGroupItem, _BaseFilterItem2);
+
+    _createClass(FilterGroupItem, [{
+        key: 'GroupName',
+        get: function get() {
+            return this._GroupName;
+        },
+        set: function set(val) {
+            this._GroupName = val;
+        }
+    }, {
+        key: 'Items',
+        get: function get() {
+            return this._Items;
+        },
+        set: function set(val) {
+            this._Items = val;
+        }
+    }]);
 
     function FilterGroupItem(name) {
         _classCallCheck(this, FilterGroupItem);
@@ -94,11 +166,11 @@ var FilterHelper = function () {
     function FilterHelper() {
         _classCallCheck(this, FilterHelper);
     }
+    //убирает лишние скобки
+
 
     _createClass(FilterHelper, null, [{
         key: 'Normalaze',
-
-        //убирает лишние скобки
         value: function Normalaze(filtrArr) {
             if ('Items' in filtrArr) {
                 if (filtrArr.Items.length == 0) {
@@ -110,11 +182,13 @@ var FilterHelper = function () {
             }
             return filtrArr;
         }
+
         //создание объектного представления фильтра(конвертрация массива в коллекцию элементов фильтра)
 
     }, {
         key: 'CreateFilterItems',
         value: function CreateFilterItems(filtrArr) {
+            if (!filtrArr) filtrArr = [];
             var rezItem = null;
             if (filtrArr != null && 'length' in filtrArr && filtrArr.length > 0) {
                 if (FilterHelper.GetName(filtrArr)) {
@@ -141,7 +215,7 @@ var FilterHelper = function () {
 
         /*ссс*
          * @param {Array<string|Array>} oldFilter стараый массив фильтров грида 
-         * @param {string} condField Имя поле
+         * @param {string} condField Имя поля
          * @param {Array<string>} condValues Массив значений
          * @return {Array<string|Array>} Новый массив фильтров грида
         */
@@ -188,7 +262,7 @@ var FilterHelper = function () {
                                 } else {
                                     if (fi.GroupName == 'or') {
                                         fi = CreateAnd([fi, newOr]);
-                                    } else { 
+                                    } else {
                                         throw "notImplimented " + fi.GroupName;
                                     }
                                 }
@@ -203,11 +277,7 @@ var FilterHelper = function () {
 
                                 fi.Items.push(newOr);
                             } else {
-                                if (fi.GroupName == 'or') {
-                                    fi = CreateAnd([fi, newOr]);
-                                } else { 
-                                    throw "notImplimented " + fi.GroupName;
-                                }
+                                throw "notImplimented 2 ==" + fi.GroupName;
                             }
                         }
                     }
@@ -216,11 +286,11 @@ var FilterHelper = function () {
             if (fi == null) return null;
             return fi.GetResultArrey();
 
-            function CreateOr(condField, condValues) {
+            function CreateOr(condFieldName, condValues) {
                 var newOr = new FilterGroupItem('or');
                 for (var i = 0; i < condValues.length; i++) {
-                    var status = condValues[i];
-                    var filter = new FilterItem(condField, "=", status);
+                    var val = condValues[i];
+                    var filter = new FilterItem(condFieldName, "=", val);
                     newOr.Items.push(filter);
                 }
                 return newOr;
@@ -262,4 +332,62 @@ var FilterHelper = function () {
     }]);
 
     return FilterHelper;
+}();
+
+var FilterElement = function () {
+    _createClass(FilterElement, [{
+        key: 'IsChecked',
+        get: function get() {
+            return this._isChecked;
+        },
+        set: function set(val) {
+            this._isChecked = val;
+        }
+    }, {
+        key: 'Caption',
+        get: function get() {
+            return this._caption;
+        },
+        set: function set(val) {
+            this._caption = val;
+        }
+    }, {
+        key: 'DataField',
+        get: function get() {
+            return this._dataField;
+        },
+        set: function set(val) {
+            this._dataField = val;
+        }
+    }, {
+        key: 'Value',
+        get: function get() {
+            return this._value;
+        },
+        set: function set(val) {
+            this._value = val;
+        }
+    }]);
+
+    function FilterElement(column) {
+        _classCallCheck(this, FilterElement);
+
+        if (column.caption) {
+            this.Caption = column.caption;
+        }
+        if (column.dataField) {
+            this.DataField = column.dataField;
+        }
+    }
+
+    _createClass(FilterElement, [{
+        key: 'setValue',
+        value: function setValue(filterArr) {
+            array.forEach(function (element) {
+                arr;
+            });
+        }
+    }]);
+
+    return FilterElement;
 }();

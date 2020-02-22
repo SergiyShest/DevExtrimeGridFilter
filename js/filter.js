@@ -32,6 +32,9 @@ class FilterItem extends BaseFilterItem {
     GetResultArrey() {
         return [this.Name, this.Condition, this.Value]
     }
+      GetString() {
+        return this.Name+this.Condition+this.Value;
+    }
 }
 
 class FilterGroupItem extends BaseFilterItem {
@@ -91,6 +94,7 @@ class FilterHelper {
 
     //создание объектного представления фильтра(конвертрация массива в коллекцию элементов фильтра)
     static CreateFilterItems(filtrArr) {
+        if(!filtrArr)filtrArr=[];
         var rezItem = null;
         if (filtrArr != null && 'length' in filtrArr && filtrArr.length > 0) {
             if (FilterHelper.GetName(filtrArr)) {//простое выражение 
@@ -156,7 +160,7 @@ class FilterHelper {
                         } else {
                             if (fi.GroupName == 'or') {
                                 fi = CreateAnd([fi, newOr]);
-                            } else { 
+                            } else {
                                 throw "notImplimented " + fi.GroupName;
                             }
                         }
@@ -181,11 +185,11 @@ class FilterHelper {
         if (fi == null) return null;
         return fi.GetResultArrey();
 
-        function CreateOr(condField, condValues) {
+        function CreateOr(condFieldName, condValues) {
             var newOr = new FilterGroupItem('or')
             for (var i = 0; i < condValues.length; i++) {
-                var status = condValues[i];
-                var filter = new FilterItem(condField, "=", status)
+                var val = condValues[i];
+                var filter = new FilterItem(condFieldName, "=", val)
                 newOr.Items.push(filter)
             }
             return newOr;
@@ -222,5 +226,39 @@ class FilterHelper {
         fi = FilterHelper.Normalaze(fi)
         return fi.GetResultArrey();
     }
+
+}
+
+class FilterElement {
+
+    get IsChecked() { return this._isChecked; }
+    set IsChecked(val) { this._isChecked = val; }   
+
+    get Caption() { return this._caption; }
+    set Caption(val) { this._caption = val; }
+
+    get DataField() { return this._dataField; }
+    set DataField(val) { this._dataField = val; }
+
+    get Value() { return this._value; }
+    set Value(val) { this._value = val; }
+
+    constructor(column) {
+        if (column.caption) {
+            this.Caption = column.caption;
+        }
+        if (column.dataField) {
+            this.DataField = column.dataField;
+        }
+    }
+
+   setValue(filterArr){
+       array.forEach(element => {
+           
+       });
+
+       
+   }
+    
 
 }

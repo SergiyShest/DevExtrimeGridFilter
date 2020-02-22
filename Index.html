@@ -52,6 +52,7 @@
         <div class="dx-clearfix"></div>
     </div>
     <br />
+    <div id="filter"></div>
     <div id="grid"></div>
 </body>
 <script>
@@ -73,6 +74,7 @@
         dataGrid.refresh();
         console.time("x");
     }
+    
     var filterInit = false;
 
     function HideFilter() {
@@ -86,6 +88,7 @@
             dataGrid = $('#grid').dxDataGrid('instance');
             filerElem = document.getElementById("filter")
             filerElem= new FilterElements(dataGrid,filerElem);
+            console.dir(colunmDescription);
             filerElem.CreateFilter( colunmDescription);
         } else {
     
