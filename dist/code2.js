@@ -127,7 +127,8 @@ $(function () {
         paging: {
             pageSize: 30
         },
-
+        allowColumnResizing: "true",
+        columnResizingMode: "widget",
         onContextMenuPreparing: contextMenuPreparing,
         focusedRowEnabled: true,
         rowAlternationEnabled: true,

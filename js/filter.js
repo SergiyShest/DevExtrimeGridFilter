@@ -159,7 +159,7 @@ class FilterHelper {
                             fi.Items.push(filterItem)//добавляю новое выражение в группу
                         } else {
                             if (fi.GroupName == 'or') {
-                                fi = CreateAnd([fi, newOr]);
+                                fi = CreateAnd([fi, filterItem]);
                             } else {
                                 throw "notImplimented " + fi.GroupName;
                             }
@@ -170,13 +170,19 @@ class FilterHelper {
                     if (fi.constructor.name == 'FilterItem') {//если предыдущее выражение было простым
                         fi = CreateAnd([fi, newOr]);
                     } else
-
                         if (fi.GroupName == 'and') {//если предыдущее выражение было групповым и имя группы 'and'
-
-                            fi.Items.push(newOr);
+                           fi = CreateAnd([fi, newOr]);
                         }
                         else {
-                            throw "notImplimented 2 ==" + fi.GroupName;
+                            if (fi.GroupName == 'or')
+                            {
+                                fi = CreateAnd([fi, newOr]);
+                            }
+                            else
+                            {
+                                 throw "notImplimented 2 ==" + fi.GroupName;
+                            }
+                           
                         }
                 }
             }
@@ -241,7 +247,15 @@ class FilterElement {
     set DataField(val) { this._dataField = val; }
 
     get Value() { return this._value; }
-    set Value(val) { this._value = val; }
+    set Value(val) { 
+        if(val!='')
+        {
+            this.IsChecked=false;
+        }else{
+            this.IsChecked=true;
+        }
+        this._value = val; 
+    }
 
     constructor(column) {
         if (column.caption) {

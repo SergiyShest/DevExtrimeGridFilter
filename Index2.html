@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Data grid example</title>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.2/jszip.min.js"></script>-->
+    <script src="Scripts/zip.js"></script>
+    <script src="Scripts/iqery.min.js"></script>
+   <!-- <script src="Scripts/dx.all.js"></script>
+   
+    <script src="Scripts/dx.aspnet.data.js"></script>-->
+      <script src="https://cdn3.devexpress.com/jslib/19.2.6/js/dx.all.js"></script>
+    <script src="js/code2.js"></script>
+    <script src="js/filter.js"></script>
+    <script src="js/FilterControls.js"></script>
+    <script src="js/data.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="Content/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="Content/dx.light.css" />
+    <link rel="stylesheet" type="text/css" href="Content/modal.CSS" />
+    <!--<script src="https://cdn3.devexpress.com/jslib/19.2.6/js/localization/dx.messages.ru.js"></script>-->
+    <script src="Scripts/localization.js"></script>
+</head>
+
+
+<body>
+
+    <div class="modal" id="filterPopup">
+        <div class="modal-content">
+            <div class="modal-header">
+                header <span id="closeButton" align="right" class="modal-close" onclick="HideFilter()">X</span>
+            </div>
+            <div id="filter" style="background-color:lightblue"></div>
+        </div>
+    </div>
+
+    <br />
+<input type="text" id="filterDiscr" style="width:800px"></input>
+    <br />
+    <input type="checkbox" id="filterIDChe" ></input>
+    id 10553,10561,10563,10583
+    <input type="text" id="filterID" style="width:300px" value="1,3" ></input>
+    <br />
+     <input type="checkbox" id="filterCountryChe" ></input>
+     ShipCountry
+    <select multiple id="filterCountry" style="width:300px" >
+        <option >Switzerland</option>
+        <option >Belgium</option>
+        <option >Brazil</option>  
+        <option >Germany</option>      
+    </select>
+    <br />   
+    <button onclick="ShowFilter()">CreateFilter</button>
+    <button onclick="StrFilter()">Filter str</button>
+    <button onclick='setFilterFrom()'>id</button>    
+    <button onclick='setFilter(["Switzerland"],"ShipCountry")'>Switzerland</button>
+    <button onclick='setFilter(["Belgium"],"ShipCountry")'>Belgium</button>
+    <button onclick='setFilter(["Brazil"],"ShipCountry")'>Brazil</button>
+    <button onclick='setFilter(["Germany","Brazil"],"ShipCountry")'>Germany+>Brazil</button>
+
+    <button onclick='clearFilter()'>FilterClear</button>
+    <button onclick="Edit()">редактировать</button>
+    <div class="filter-container">
+        <div id="filterBuilder"></div>
+        <div id="apply"></div>
+        <div class="dx-clearfix"></div>
+    </div>
+    <br />
+    <div id="filter"></div>
+    <div id="grid"></div>
+</body>
+<script>
+ DevExpress.localization.locale(navigator.language);
+  function setFilterFrom()
+  {
+    var oldFilter = dataGrid.getCombinedFilter();
+    console.log('oldFilter=');
+     console.dir(oldFilter);
+     var ids = $('#filterID').val();
+     var valueAr= ids.split(',');
+console.log(valueAr);
+    var filter = FilterHelper.ApplyInCon(oldFilter, "OrderID", valueAr);
+   console.log('Filter=');
+    console.dirxml(filter);
+
+    valueAr = $('#filterCountry').val();
+console.log(valueAr);
+    var filter = FilterHelper.ApplyInCon(filter, "ShipCountry", valueAr);
+    dataGrid.filter(filter);
+        dataGrid.refresh();
+  }
+    
+    function setFilter(valueAr,fieldName) {
+        var oldFilter = dataGrid.getCombinedFilter();
+        var filter = FilterHelper.ApplyInCon(oldFilter, fieldName, valueAr)
+
+        dataGrid.filter(filter);
+        dataGrid.refresh();
+        console.time("x");
+        
+        $('#filterDiscr').val(filter); 
+        }
+    </script> 
+</body> 
+  
+</html> 
+
+ 

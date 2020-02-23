@@ -261,7 +261,7 @@ var FilterHelper = function () {
                                     fi.Items.push(filterItem); //добавляю новое выражение в группу
                                 } else {
                                     if (fi.GroupName == 'or') {
-                                        fi = CreateAnd([fi, newOr]);
+                                        fi = CreateAnd([fi, filterItem]);
                                     } else {
                                         throw "notImplimented " + fi.GroupName;
                                     }
@@ -274,10 +274,13 @@ var FilterHelper = function () {
                                 fi = CreateAnd([fi, newOr]);
                             } else if (fi.GroupName == 'and') {
                                 //если предыдущее выражение было групповым и имя группы 'and'
-
                                 fi.Items.push(newOr);
                             } else {
-                                throw "notImplimented 2 ==" + fi.GroupName;
+                                if (fi.GroupName == 'or') {
+                                    fi = CreateAnd([fi, newOr]);
+                                } else {
+                                    throw "notImplimented 2 ==" + fi.GroupName;
+                                }
                             }
                         }
                     }
@@ -365,6 +368,11 @@ var FilterElement = function () {
             return this._value;
         },
         set: function set(val) {
+            if (val != '') {
+                this.IsChecked = false;
+            } else {
+                this.IsChecked = true;
+            }
             this._value = val;
         }
     }]);
@@ -383,9 +391,7 @@ var FilterElement = function () {
     _createClass(FilterElement, [{
         key: 'setValue',
         value: function setValue(filterArr) {
-            array.forEach(function (element) {
-                arr;
-            });
+            array.forEach(function (element) {});
         }
     }]);
 

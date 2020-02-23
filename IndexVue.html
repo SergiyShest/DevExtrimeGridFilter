@@ -25,8 +25,9 @@
             <div>
                 <button @click='createFilter()'>filrer</button>
                 <div v-for="column in columns" v-key="column.Caption">
-                    <input type="checkbox" value="column.IsChecked"></input>
+                    <input type="checkbox" v-model="column.IsChecked"></input>
                     {{column.Caption}}
+                     <input type="text" v-model="column.Value" ></input>
                 </div>
             </div>
         </div>
