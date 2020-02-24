@@ -20,7 +20,7 @@ describe("FilterHelper Tests", function () {
         var exp = [["ID", "=", "1113"], 'and', ["IDX", "=", "1112"]];
         var resFilter = FilterHelper.CreateFilterItems(exp);
         expect(resFilter.GroupName).to.equal( 'and');
-        console.log(resFilter);
+      //  console.log(resFilter);
         expect(resFilter.Items.length).to.equal(2);
     });
 
@@ -29,7 +29,7 @@ describe("FilterHelper Tests", function () {
         var exp = [["ID", "=", "1113"], 'and', ["IDX", "=", "1112"], 'and', ["IDX", "=", "1112"]];
         var resFilter = FilterHelper.CreateFilterItems(exp);
         expect(resFilter.GroupName ).to.equal(  'and');
-        console.log(resFilter);
+      //  console.log(resFilter);
         expect(resFilter.Items.length).to.equal( 3);
 
     });
@@ -55,7 +55,7 @@ describe("FilterHelper Tests", function () {
         var exp = [["ID", "=", "1113"], 'and', ["IDX", "=", "1112"], 'and', ["IDX", "=", "1112"]];
         var resFilter = FilterHelper.CreateFilterItems(exp);
         var arr = resFilter.GetResultArrey();
-        console.log(arr);
+      //  console.log(arr);
         expect(exp).to.eql(arr);
     });
 
@@ -75,7 +75,6 @@ describe("FilterHelper Tests", function () {
         expect(expFilterFilter).to.eql(arr);
     });
 
-
     it("test Add OR group empty in filter", function () {
         var oldFilter = [];
         var expFilterFilter = [["IDX", "=", "1112"], 'or', ["IDX", "=", "1412"]];
@@ -85,7 +84,6 @@ describe("FilterHelper Tests", function () {
         expect(expFilterFilter).to.eql(arr);
     });
 
-//
     it("test Add OR group in simple filter ", function () {
         var oldFilter = ["ID", "=", "1113"];//старое значение н
         var expFilterFilter = [["ID", "=", "1113"], 'and', [["IDX", "=", "1112"], 'or', ["IDX", "=", "1412"]]];
@@ -104,7 +102,6 @@ describe("FilterHelper Tests", function () {
         expect(expFilterFilter).to.eql(arr);
     });
 
-
     it("test Add OR group in GROUP filter 2", function () {
         var oldFilter = [["IDX", "=", "14"], 'or', ["IDX", "=", "412"]];
         var expFilterFilter = [["IDX", "=", "1112"], 'or', ["IDX", "=", "1412"]];
@@ -113,6 +110,7 @@ describe("FilterHelper Tests", function () {
         var arr = FilterHelper.ApplyInCon(oldFilter, condField, condValues);
         expect(expFilterFilter).to.eql(arr);
     });
+
     it("test Add OR group in GROUP filter 3", function () {
      
         var expFilterFilter = [["IDX", "=", "1112"], 'or', ["IDX", "=", "1412"]];
@@ -121,6 +119,7 @@ describe("FilterHelper Tests", function () {
         var arr = FilterHelper.ApplyInCon(null, condField, condValues);
         expect(expFilterFilter).to.eql(arr);
     });
+
    it("test Add OR group in GROUP filter 4", function () {
     var oldFilter = [["IDX", "=", "1"], 'or', ["IDX", "=", "2"]];
         var expFilterFilter = [[["IDX", "=", "1"], 'or', ["IDX", "=", "2"]],'and' ,[["I", "=", "11"], 'or', ["I", "=", "14"]]];
@@ -130,26 +129,29 @@ describe("FilterHelper Tests", function () {
         expect(expFilterFilter).to.eql(arr);
        // console.log(arr);
     });
+
      it("test repit filter simpl  ", function () {
         var oldFilter =       [ ["IDX", "=", "2"],'and' ,["I", "=", "11"]];
         var expFilterFilter =  [ ["IDX", "=", "2"],'and' ,["I", "=", "11"]];
         var condField = 'I'
         var condValues = ["11"]
         var arr = FilterHelper.ApplyInCon(oldFilter, condField, condValues);
-        console.dirxml(arr);
+     //   console.dirxml(arr);
         expect(expFilterFilter).to.eql(arr);
-        console.log(arr);
-    });   
+      //  console.log(arr);
+    }); 
+
     it("test repit filter simple ", function () {
         var oldFilter =       [[["IDX", "=", "1"], 'or', ["IDX", "=", "2"]],'and' ,["I", "=", "11"]];
         var expFilterFilter = [[["IDX", "=", "1"], 'or', ["IDX", "=", "2"]],'and' ,["I", "=", "11"]];
         var condField = 'I'
         var condValues = ["11"]
         var arr = FilterHelper.ApplyInCon(oldFilter, condField, condValues);
-        console.dirxml(arr);
+       // console.dirxml(arr);
         expect(expFilterFilter).to.eql(arr);
-        console.log(arr);
+      //  console.log(arr);
     });
+
    it("test repit filter ", function () {
         var oldFilter =       [[["IDX", "=", "1"], 'or', ["IDX", "=", "2"]],'and' ,[["I", "=", "11"], 'or', ["I", "=", "14"]]];
         var expFilterFilter = [[["IDX", "=", "1"], 'or', ["IDX", "=", "2"]],'and' ,[["I", "=", "11"], 'or', ["I", "=", "14"]]];
@@ -158,7 +160,31 @@ describe("FilterHelper Tests", function () {
         var arr = FilterHelper.ApplyInCon(oldFilter, condField, condValues);
         console.dirxml(arr);
         expect(expFilterFilter).to.eql(arr);
-        console.log(arr);
+      
     });
+
+    it("test RemoveOldItems ", function () {
+        var oldFilter =       [[["IDX", "=", "1"], 'or', ["IDX", "=", "2"]],'and' ,[["I", "=", "11"], 'or', ["I", "=", "14"]]];
+        var expFilterFilter = [["IDX", "=", "1"], 'or', ["IDX", "=", "2"]];
+        var condField = 'I'
+        var oldObjectFilter = FilterHelper.CreateFilterItems(oldFilter);
+        var arr = FilterHelper.RemoveOldItems(oldObjectFilter, condField);
+        var resArr=arr.GetResultArrey();
+        console.dirxml(resArr);
+        expect(expFilterFilter).to.eql(resArr);
+      
+    }); 
     
+     it("test Normalaze ", function () {
+        var oldFilter =       [[["IDX", "=", "1"], 'or', ["IDX", "=", "2"]],'and' ,[]];
+        var oldObjectFilter = FilterHelper.CreateFilterItems(oldFilter);
+
+        var expFilter = [["IDX", "=", "1"], 'or', ["IDX", "=", "2"]];
+    
+        var arr = FilterHelper.Normalaze(oldObjectFilter);
+        var resArr=arr.GetResultArrey();
+        console.dirxml(resArr);
+        expect(expFilter).to.eql(resArr);
+      
+    });    
 });

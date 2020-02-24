@@ -85,16 +85,30 @@ class FilterHelper {
             if (filtrArr.Items.length == 0) {
                 return null;
             }
-            if (filtrArr.Items.length == 1) {
-                return FilterHelper.Normalaze(filtrArr.Items[0])
-            }
+             var newItems = [];
+            filtrArr.Items.forEach(item => {
+               
+                if (item != null) 
+                {
+                item =  FilterHelper.Normalaze(item)
+                 if(item!=null)
+                 {
+                     newItems.push(item);
+                 }
+                }
+            });
+            if(newItems.length==0)
+            return null;
+            if(newItems.length==1)
+            return newItems[0];
+            filtrArr.Items=newItems;
         }
         return filtrArr
     }
 
     //создание объектного представления фильтра(конвертрация массива в коллекцию элементов фильтра)
     static CreateFilterItems(filtrArr) {
-        if(!filtrArr)filtrArr=[];
+        if(!filtrArr||filtrArr=="")filtrArr=[];
         var rezItem = null;
         if (filtrArr != null && 'length' in filtrArr && filtrArr.length > 0) {
             if (FilterHelper.GetName(filtrArr)) {//простое выражение 
@@ -119,26 +133,47 @@ class FilterHelper {
         return rezItem;
     }
 
+     static RemoveOldItems(filter, condField)
+     {
+
+        if (filter.constructor.name == 'FilterItem') {
+            if (filter.Name == condField) {
+                filter = null;
+            }
+        } else {
+            filter.Remove(condField);
+            filter = FilterHelper.Normalaze(filter);
+        }
+        return filter;
+     }
+     static RemoveCondition(filterArr, condField)
+     {
+       var filter = FilterHelper.CreateFilterItems(filterArr);
+       if(filter!=null)
+       {
+           filter =   FilterHelper.RemoveOldItems(filter, condField);
+       } 
+       if(filter!=null)
+       {
+           return filter.GetResultArrey();
+       }
+       return "";
+     }
     /*ссс*
      * @param {Array<string|Array>} oldFilter стараый массив фильтров грида 
      * @param {string} condField Имя поля
      * @param {Array<string>} condValues Массив значений
      * @return {Array<string|Array>} Новый массив фильтров грида
     */
-    static ApplyInCon(oldFilter, condField, condValues) {
+    static ApplyInCon(oldGridFilter, condField, condValues) {
         var fi = null;
-        if (typeof oldFilter !== 'undefined') {
-            fi = FilterHelper.CreateFilterItems(oldFilter);//преобразование массива в объектный тип
+        if (typeof oldGridFilter !== 'undefined') {
+            fi = FilterHelper.CreateFilterItems(oldGridFilter);//преобразование массива в объектный тип
         }
-        if (fi != null) {//удаление старых значений
-            if (fi.constructor.name == 'FilterItem') {
-                if (fi.Name == condField) {
-                    fi = null;
-                }
-            } else {
-                fi.Remove(condField);
-                fi = FilterHelper.Normalaze(fi);
-            }
+        if (fi != null) {
+            fi=FilterHelper.RemoveOldItems(fi,condField)
+            //удаление старых значений
+           
         }
 
         if (fi == null) {//старый фильтр пустой или стал пустым после удаления предыдущих значений
@@ -152,38 +187,38 @@ class FilterHelper {
             {
                 if (condValues.length == 1) {//если добавлять одно значение
                     var filterItem = new FilterItem(condField, "=", condValues[0])//
-                    if (fi.constructor.name == 'FilterItem') {//если предыдущее выражение было простым
+                   // if (fi.constructor.name == 'FilterItem') {//если предыдущее выражение было простым
                         fi = CreateAnd([fi, filterItem]);
-                    } else {
-                        if (fi.GroupName == 'and') {//если предыдущее выражение было групповым и имя группы 'and'
-                            fi.Items.push(filterItem)//добавляю новое выражение в группу
-                        } else {
-                            if (fi.GroupName == 'or') {
-                                fi = CreateAnd([fi, filterItem]);
-                            } else {
-                                throw "notImplimented " + fi.GroupName;
-                            }
-                        }
-                    }
+                    // } else {
+                    //     if (fi.GroupName == 'and') {//если предыдущее выражение было групповым и имя группы 'and'
+                    //         fi.Items.push(filterItem)//добавляю новое выражение в группу
+                    //     } else {
+                    //         if (fi.GroupName == 'or') {
+                    //             fi = CreateAnd([fi, filterItem]);
+                    //         } else {
+                    //             throw "notImplimented " + fi.GroupName;
+                    //         }
+                    //     }
+                    // }
                 } else {
                     var newOr = CreateOr(condField, condValues)
-                    if (fi.constructor.name == 'FilterItem') {//если предыдущее выражение было простым
+                  //  if (fi.constructor.name == 'FilterItem') {//если предыдущее выражение было простым
                         fi = CreateAnd([fi, newOr]);
-                    } else
-                        if (fi.GroupName == 'and') {//если предыдущее выражение было групповым и имя группы 'and'
-                           fi = CreateAnd([fi, newOr]);
-                        }
-                        else {
-                            if (fi.GroupName == 'or')
-                            {
-                                fi = CreateAnd([fi, newOr]);
-                            }
-                            else
-                            {
-                                 throw "notImplimented 2 ==" + fi.GroupName;
-                            }
+                    // } else
+                    //     if (fi.GroupName == 'and') {//если предыдущее выражение было групповым и имя группы 'and'
+                    //        fi = CreateAnd([fi, newOr]);
+                    //     }
+                    //     else {
+                    //         if (fi.GroupName == 'or')
+                    //         {
+                    //             fi = CreateAnd([fi, newOr]);
+                    //         }
+                    //         else
+                    //         {
+                    //              throw "notImplimented 2 ==" + fi.GroupName;
+                    //         }
                            
-                        }
+                    //     }
                 }
             }
         }

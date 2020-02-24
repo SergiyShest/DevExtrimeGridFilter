@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -14,7 +14,7 @@ var BaseFilterItem = function () {
     }
 
     _createClass(BaseFilterItem, [{
-        key: 'isFilterItem',
+        key: "isFilterItem",
         get: function get() {
             return this._name;
         },
@@ -22,7 +22,7 @@ var BaseFilterItem = function () {
             this._name = val;
         }
     }, {
-        key: 'isFilterGroupItem',
+        key: "isFilterGroupItem",
         get: function get() {
             return this._namex;
         },
@@ -38,7 +38,7 @@ var FilterItem = function (_BaseFilterItem) {
     _inherits(FilterItem, _BaseFilterItem);
 
     _createClass(FilterItem, [{
-        key: 'Name',
+        key: "Name",
         get: function get() {
             return this._Name;
         },
@@ -46,7 +46,7 @@ var FilterItem = function (_BaseFilterItem) {
             this._Name = val;
         }
     }, {
-        key: 'Condition',
+        key: "Condition",
         get: function get() {
             return this._Condition;
         },
@@ -54,7 +54,7 @@ var FilterItem = function (_BaseFilterItem) {
             this._Condition = val;
         }
     }, {
-        key: 'Value',
+        key: "Value",
         get: function get() {
             return this._Value;
         },
@@ -82,12 +82,12 @@ var FilterItem = function (_BaseFilterItem) {
     }
 
     _createClass(FilterItem, [{
-        key: 'GetResultArrey',
+        key: "GetResultArrey",
         value: function GetResultArrey() {
             return [this.Name, this.Condition, this.Value];
         }
     }, {
-        key: 'GetString',
+        key: "GetString",
         value: function GetString() {
             return this.Name + this.Condition + this.Value;
         }
@@ -100,7 +100,7 @@ var FilterGroupItem = function (_BaseFilterItem2) {
     _inherits(FilterGroupItem, _BaseFilterItem2);
 
     _createClass(FilterGroupItem, [{
-        key: 'GroupName',
+        key: "GroupName",
         get: function get() {
             return this._GroupName;
         },
@@ -108,7 +108,7 @@ var FilterGroupItem = function (_BaseFilterItem2) {
             this._GroupName = val;
         }
     }, {
-        key: 'Items',
+        key: "Items",
         get: function get() {
             return this._Items;
         },
@@ -129,7 +129,7 @@ var FilterGroupItem = function (_BaseFilterItem2) {
     }
 
     _createClass(FilterGroupItem, [{
-        key: 'GetResultArrey',
+        key: "GetResultArrey",
         value: function GetResultArrey() {
             var resultArrey = new Array();
             for (var i = 0; i < this.Items.length; i++) {
@@ -143,7 +143,7 @@ var FilterGroupItem = function (_BaseFilterItem2) {
         //удаляет из  this.Items объекты с именем fieldName
 
     }, {
-        key: 'Remove',
+        key: "Remove",
         value: function Remove(fieldName) {
             var resultArrey = new Array();
             for (var i = 0; i < this.Items.length; i++) {
@@ -170,15 +170,25 @@ var FilterHelper = function () {
 
 
     _createClass(FilterHelper, null, [{
-        key: 'Normalaze',
+        key: "Normalaze",
         value: function Normalaze(filtrArr) {
             if ('Items' in filtrArr) {
                 if (filtrArr.Items.length == 0) {
                     return null;
                 }
-                if (filtrArr.Items.length == 1) {
-                    return FilterHelper.Normalaze(filtrArr.Items[0]);
-                }
+                var newItems = [];
+                filtrArr.Items.forEach(function (item) {
+
+                    if (item != null) {
+                        item = FilterHelper.Normalaze(item);
+                        if (item != null) {
+                            newItems.push(item);
+                        }
+                    }
+                });
+                if (newItems.length == 0) return null;
+                if (newItems.length == 1) return newItems[0];
+                filtrArr.Items = newItems;
             }
             return filtrArr;
         }
@@ -186,9 +196,9 @@ var FilterHelper = function () {
         //создание объектного представления фильтра(конвертрация массива в коллекцию элементов фильтра)
 
     }, {
-        key: 'CreateFilterItems',
+        key: "CreateFilterItems",
         value: function CreateFilterItems(filtrArr) {
-            if (!filtrArr) filtrArr = [];
+            if (!filtrArr || filtrArr == "") filtrArr = [];
             var rezItem = null;
             if (filtrArr != null && 'length' in filtrArr && filtrArr.length > 0) {
                 if (FilterHelper.GetName(filtrArr)) {
@@ -212,7 +222,32 @@ var FilterHelper = function () {
             }
             return rezItem;
         }
+    }, {
+        key: "RemoveOldItems",
+        value: function RemoveOldItems(filter, condField) {
 
+            if (filter.constructor.name == 'FilterItem') {
+                if (filter.Name == condField) {
+                    filter = null;
+                }
+            } else {
+                filter.Remove(condField);
+                filter = FilterHelper.Normalaze(filter);
+            }
+            return filter;
+        }
+    }, {
+        key: "RemoveCondition",
+        value: function RemoveCondition(filterArr, condField) {
+            var filter = FilterHelper.CreateFilterItems(filterArr);
+            if (filter != null) {
+                filter = FilterHelper.RemoveOldItems(filter, condField);
+            }
+            if (filter != null) {
+                return filter.GetResultArrey();
+            }
+            return "";
+        }
         /*ссс*
          * @param {Array<string|Array>} oldFilter стараый массив фильтров грида 
          * @param {string} condField Имя поля
@@ -221,22 +256,15 @@ var FilterHelper = function () {
         */
 
     }, {
-        key: 'ApplyInCon',
-        value: function ApplyInCon(oldFilter, condField, condValues) {
+        key: "ApplyInCon",
+        value: function ApplyInCon(oldGridFilter, condField, condValues) {
             var fi = null;
-            if (typeof oldFilter !== 'undefined') {
-                fi = FilterHelper.CreateFilterItems(oldFilter); //преобразование массива в объектный тип
+            if (typeof oldGridFilter !== 'undefined') {
+                fi = FilterHelper.CreateFilterItems(oldGridFilter); //преобразование массива в объектный тип
             }
             if (fi != null) {
+                fi = FilterHelper.RemoveOldItems(fi, condField);
                 //удаление старых значений
-                if (fi.constructor.name == 'FilterItem') {
-                    if (fi.Name == condField) {
-                        fi = null;
-                    }
-                } else {
-                    fi.Remove(condField);
-                    fi = FilterHelper.Normalaze(fi);
-                }
             }
 
             if (fi == null) {
@@ -252,36 +280,38 @@ var FilterHelper = function () {
                         if (condValues.length == 1) {
                             //если добавлять одно значение
                             var filterItem = new FilterItem(condField, "=", condValues[0]); //
-                            if (fi.constructor.name == 'FilterItem') {
-                                //если предыдущее выражение было простым
-                                fi = CreateAnd([fi, filterItem]);
-                            } else {
-                                if (fi.GroupName == 'and') {
-                                    //если предыдущее выражение было групповым и имя группы 'and'
-                                    fi.Items.push(filterItem); //добавляю новое выражение в группу
-                                } else {
-                                    if (fi.GroupName == 'or') {
-                                        fi = CreateAnd([fi, filterItem]);
-                                    } else {
-                                        throw "notImplimented " + fi.GroupName;
-                                    }
-                                }
-                            }
+                            // if (fi.constructor.name == 'FilterItem') {//если предыдущее выражение было простым
+                            fi = CreateAnd([fi, filterItem]);
+                            // } else {
+                            //     if (fi.GroupName == 'and') {//если предыдущее выражение было групповым и имя группы 'and'
+                            //         fi.Items.push(filterItem)//добавляю новое выражение в группу
+                            //     } else {
+                            //         if (fi.GroupName == 'or') {
+                            //             fi = CreateAnd([fi, filterItem]);
+                            //         } else {
+                            //             throw "notImplimented " + fi.GroupName;
+                            //         }
+                            //     }
+                            // }
                         } else {
                             var newOr = CreateOr(condField, condValues);
-                            if (fi.constructor.name == 'FilterItem') {
-                                //если предыдущее выражение было простым
-                                fi = CreateAnd([fi, newOr]);
-                            } else if (fi.GroupName == 'and') {
-                                //если предыдущее выражение было групповым и имя группы 'and'
-                                fi.Items.push(newOr);
-                            } else {
-                                if (fi.GroupName == 'or') {
-                                    fi = CreateAnd([fi, newOr]);
-                                } else {
-                                    throw "notImplimented 2 ==" + fi.GroupName;
-                                }
-                            }
+                            //  if (fi.constructor.name == 'FilterItem') {//если предыдущее выражение было простым
+                            fi = CreateAnd([fi, newOr]);
+                            // } else
+                            //     if (fi.GroupName == 'and') {//если предыдущее выражение было групповым и имя группы 'and'
+                            //        fi = CreateAnd([fi, newOr]);
+                            //     }
+                            //     else {
+                            //         if (fi.GroupName == 'or')
+                            //         {
+                            //             fi = CreateAnd([fi, newOr]);
+                            //         }
+                            //         else
+                            //         {
+                            //              throw "notImplimented 2 ==" + fi.GroupName;
+                            //         }
+
+                            //     }
                         }
                     }
             }
@@ -313,7 +343,7 @@ var FilterHelper = function () {
         */
 
     }, {
-        key: 'GetName',
+        key: "GetName",
         value: function GetName(filterArr) {
             // var arrType = typeof filterArr;
             if (typeof filterArr !== "undefined" && typeof filterArr.length !== "undefined") if (filterArr.length == 3 && typeof filterArr[0] == 'string') {
@@ -322,7 +352,7 @@ var FilterHelper = function () {
             return null;
         }
     }, {
-        key: 'DeleteFields',
+        key: "DeleteFields",
         value: function DeleteFields(filterArr, fieldName) {
             var fi = FilterHelper.CreateFilterItems(filterArr);
             if (fi.Name == fieldName) {
@@ -339,7 +369,7 @@ var FilterHelper = function () {
 
 var FilterElement = function () {
     _createClass(FilterElement, [{
-        key: 'IsChecked',
+        key: "IsChecked",
         get: function get() {
             return this._isChecked;
         },
@@ -347,7 +377,7 @@ var FilterElement = function () {
             this._isChecked = val;
         }
     }, {
-        key: 'Caption',
+        key: "Caption",
         get: function get() {
             return this._caption;
         },
@@ -355,7 +385,7 @@ var FilterElement = function () {
             this._caption = val;
         }
     }, {
-        key: 'DataField',
+        key: "DataField",
         get: function get() {
             return this._dataField;
         },
@@ -363,7 +393,7 @@ var FilterElement = function () {
             this._dataField = val;
         }
     }, {
-        key: 'Value',
+        key: "Value",
         get: function get() {
             return this._value;
         },
@@ -389,7 +419,7 @@ var FilterElement = function () {
     }
 
     _createClass(FilterElement, [{
-        key: 'setValue',
+        key: "setValue",
         value: function setValue(filterArr) {
             array.forEach(function (element) {});
         }
