@@ -267,7 +267,6 @@ class FilterHelper {
         fi = FilterHelper.Normalaze(fi)
         return fi.GetResultArrey();
     }
-
 }
 
 class FilterElement {

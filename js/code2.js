@@ -57,6 +57,23 @@ function onRowClick(e) {
         }
     }
 
+    //поиск имени конолки по фильтру
+    function getColumnFieldName(dataGridInstance, getter) {
+        var column,
+            i;
+
+        if ($.isFunction(getter)) {
+            for (i = 0; i < dataGridInstance.columnCount(); i++) {
+                column = dataGridInstance.columnOption(i);
+                if (column.calculateCellValue.guid === getter.guid) {
+                    return column.dataField;
+                }
+            }
+        }
+        else {
+            return getter;
+        }
+    }
 
 
 //добавление пункта меню копировать
@@ -80,40 +97,11 @@ function contextMenuPreparing(e) {
 
 $(function () {
 
-    //получение строки фильтров
-    function processFilter(dataGridInstance, filter) {
-        if ($.isArray(filter)) {
-            if ($.isFunction(filter[0])) {
-                filter[0] = getColumnFieldName(dataGridInstance, filter[0]);
-            }
-            else {
-                for (var i = 0; i < filter.length; i++) {
-                    processFilter(dataGridInstance, filter[i]);
-                }
-            }
-        }
-    }
 
 
 
 
-    //поиск имени конолки по фильтру
-    function getColumnFieldName(dataGridInstance, getter) {
-        var column,
-            i;
 
-        if ($.isFunction(getter)) {
-            for (i = 0; i < dataGridInstance.columnCount(); i++) {
-                column = dataGridInstance.columnOption(i);
-                if (column.calculateCellValue.guid === getter.guid) {
-                    return column.dataField;
-                }
-            }
-        }
-        else {
-            return getter;
-        }
-    }
 
 
    $("#grid").dxDataGrid({

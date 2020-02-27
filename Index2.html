@@ -13,13 +13,12 @@
     <script src="https://cdn3.devexpress.com/jslib/19.2.6/js/dx.all.js"></script>
     <script src="js/code2.js"></script>
     <script src="js/filter.js"></script>
-    <script src="js/FilterControls.js"></script>
+    <!-- <script src="js/FilterControls.js"></script> -->
     <script src="js/data.js"></script>
 
     <link rel="stylesheet" type="text/css" href="Content/dx.common.css" />
     <link rel="stylesheet" type="text/css" href="Content/dx.light.css" />
     <link rel="stylesheet" type="text/css" href="Content/modal.CSS" />
-    <!--<script src="https://cdn3.devexpress.com/jslib/19.2.6/js/localization/dx.messages.ru.js"></script>-->
     <script src="Scripts/localization.js"></script>
 </head>
 
@@ -42,6 +41,7 @@
     id 10553,10561,10563,10583
     <input type="text" id="filterID" style="width:300px" value="1,3"></input>
     <br />
+
     <input type="checkbox" id="filterCountryChe"></input>
     ShipCountry
     <select multiple id="filterCountry" style="width:300px">
@@ -51,18 +51,20 @@
         <option>Germany</option>
         <option>Finland</option>
         <option>Finland</option>
-    </select>
+    </select><button onclick='setFilterFrom()'>Find</button>
+    <br />
     <br />
     <button onclick="ShowFilter()">CreateFilter</button>
     <button onclick="StrFilter()">Filter str</button>
-    <button onclick='setFilterFrom()'>id</button>
+    
     <button onclick='setFilter(["Switzerland"],"ShipCountry")'>Switzerland</button>
     <button onclick='setFilter(["Belgium"],"ShipCountry")'>Belgium</button>
     <button onclick='setFilter(["Brazil"],"ShipCountry")'>Brazil</button>
     <button onclick='setFilter(["Germany","Brazil"],"ShipCountry")'>Germany+>Brazil</button>
 
     <button onclick='clearFilter()'>FilterClear</button>
-    <button onclick="Edit()">редактировать</button>
+
+
     <div class="filter-container">
         <div id="filterBuilder"></div>
         <div id="apply"></div>
@@ -74,36 +76,52 @@
 </body>
 <script>
     DevExpress.localization.locale(navigator.language);
+    
     function setFilterFrom() {
         var oldFilter = dataGrid.getCombinedFilter();
-        console.log('oldFilter=');
-        console.dir(oldFilter);
+     //   console.log('oldFilter=');
+     //   console.dir(oldFilter);
         var filter=oldFilter;
-        var ids = $('#filterID').val();
-       if (ids.length > 0) {
-            var valueAr = ids.split(',');
-            filter = FilterHelper.ApplyInCon(filter, "OrderID", valueAr);
+        var filterText = $('#filterID').val();
+        
+         filter =GetFilterFromText("OrderID",filterText,filter)
+         
+         valueAr = $('#filterCountry').val();
+         filter = GetFilterFromArr("ShipCountry",valueAr,filter);
+        
+         filter =  dataGrid.option("filterValue", filter);
+        $('#filterDiscr').val(filter);
+
+        function GetFilterFromText(fieldName,text,filterArr){
+            if (text.length > 0) {
+            var valueAr = text.split(',');
+            filterArr = FilterHelper.ApplyInCon(filterArr, fieldName, valueAr);
 
        }else{
-        filter = FilterHelper.RemoveCondition(filter,"OrderID")
+        filterArr = FilterHelper.RemoveCondition(filterArr,fieldName)
        }
-        valueAr = $('#filterCountry').val();
+       return filterArr;
+        }
+
+        function GetFilterFromArr(fieldName,valueAr,filterArr){
          if (valueAr.length > 0) {
-         filter = FilterHelper.ApplyInCon(filter, "ShipCountry", valueAr);
+            filterArr = FilterHelper.ApplyInCon(filterArr, fieldName, valueAr);
          }else{
-            filter = FilterHelper.RemoveCondition(filter,"ShipCountry")
+            filterArr = FilterHelper.RemoveCondition(filterArr,fieldName)
          }
-        dataGrid.filter(filter);
-        dataGrid.refresh();
-        $('#filterDiscr').val(filter);
+         return filterArr;
+        }
+    
     }
 
     function setFilter(valueAr, fieldName) {
         var oldFilter = dataGrid.getCombinedFilter();
         var filter = FilterHelper.ApplyInCon(oldFilter, fieldName, valueAr)
 
-        dataGrid.filter(filter);
-        dataGrid.refresh();
+       // dataGrid.filter(filter);
+       // dataGrid.refresh();
+
+       dataGrid.option("filterValue", filter);
         console.time("x");
 
         $('#filterDiscr').val(filter);

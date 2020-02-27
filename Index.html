@@ -67,13 +67,7 @@
         dataGrid.refresh();
         console.time("x");
     }
-   function setFilterOld(status) {
-       
-        var filter = ["ShipCountry", "=", status];
-        dataGrid.filter(filter);
-        dataGrid.refresh();
-        console.time("x");
-    }
+
     
     var filterInit = false;
 
@@ -105,8 +99,8 @@
 
     function clearFilter() {
         dataGrid.clearFilter();
-      //  f = dataGrid.getCombinedFilter(false);
-dataGrid.refresh()
+
+          dataGrid.refresh()
     }
     var dataGrid = $('#grid').dxDataGrid('instance');
 </script>
