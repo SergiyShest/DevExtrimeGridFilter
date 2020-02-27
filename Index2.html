@@ -78,39 +78,17 @@
     DevExpress.localization.locale(navigator.language);
     
     function setFilterFrom() {
-        var oldFilter = dataGrid.getCombinedFilter();
-     //   console.log('oldFilter=');
-     //   console.dir(oldFilter);
-        var filter=oldFilter;
+        var filter = dataGrid.getCombinedFilter();
+
         var filterText = $('#filterID').val();
-        
-         filter =GetFilterFromText("OrderID",filterText,filter)
+         filter =FilterHelper.GetFilterFromText("OrderID",filterText,filter)
          
          valueAr = $('#filterCountry').val();
-         filter = GetFilterFromArr("ShipCountry",valueAr,filter);
+         filter = FilterHelper.GetFilterFromArr("ShipCountry",valueAr,filter);
         
          filter =  dataGrid.option("filterValue", filter);
         $('#filterDiscr').val(filter);
 
-        function GetFilterFromText(fieldName,text,filterArr){
-            if (text.length > 0) {
-            var valueAr = text.split(',');
-            filterArr = FilterHelper.ApplyInCon(filterArr, fieldName, valueAr);
-
-       }else{
-        filterArr = FilterHelper.RemoveCondition(filterArr,fieldName)
-       }
-       return filterArr;
-        }
-
-        function GetFilterFromArr(fieldName,valueAr,filterArr){
-         if (valueAr.length > 0) {
-            filterArr = FilterHelper.ApplyInCon(filterArr, fieldName, valueAr);
-         }else{
-            filterArr = FilterHelper.RemoveCondition(filterArr,fieldName)
-         }
-         return filterArr;
-        }
     
     }
 
@@ -118,8 +96,6 @@
         var oldFilter = dataGrid.getCombinedFilter();
         var filter = FilterHelper.ApplyInCon(oldFilter, fieldName, valueAr)
 
-       // dataGrid.filter(filter);
-       // dataGrid.refresh();
 
        dataGrid.option("filterValue", filter);
         console.time("x");

@@ -267,6 +267,37 @@ class FilterHelper {
         fi = FilterHelper.Normalaze(fi)
         return fi.GetResultArrey();
     }
+      /**
+       * the input string will be divided by comma to get an array of parameters
+        @param { string} fieldName 
+        @param {string } filterText  
+        @param {Array<string| Array> } filterArr previous  dataGrid filter 
+    */  
+    static GetFilterFromText(fieldName,filterText,filterArr){
+        if (filterText.length > 0) {
+        var valueAr = filterText.split(',');
+        filterArr = FilterHelper.ApplyInCon(filterArr, fieldName, valueAr);
+
+   }else{
+    filterArr = FilterHelper.RemoveCondition(filterArr,fieldName)
+   }
+   return filterArr;
+    }
+    /**
+        @param { string} fieldName 
+        @param {Array<string> } valueAr 
+        @param {Array<string| Array> } filterArr previous  dataGrid filter 
+    */
+    static GetFilterFromArr(fieldName,valueAr,filterArr){
+     if (valueAr.length > 0) {
+        filterArr = FilterHelper.ApplyInCon(filterArr, fieldName, valueAr);
+     }else{
+        filterArr = FilterHelper.RemoveCondition(filterArr,fieldName)
+     }
+     return filterArr;
+    }
+
+
 }
 
 class FilterElement {
