@@ -12,7 +12,7 @@
     <script src="Scripts/dx.aspnet.data.js"></script>-->
       <script src="https://cdn3.devexpress.com/jslib/19.2.6/js/dx.all.js"></script>
     <script src="js/code2.js"></script>
-    <script src="dist/filter.js"></script>
+    <script src="js/FilterHelper.js"></script>
     <script src="js/FilterControls.js"></script>
     <script src="js/data.js"></script>
 
@@ -37,38 +37,18 @@
 
     <br />
     <button onclick="ShowFilter()">CreateFilter</button>
-    <button onclick="StrFilter()">Filter str</button>
-    <button onclick='setFilter([10553,10561,10563,10583],"OrderID")'>id</button>    
-    <button onclick='setFilter(["Switzerland"],"ShipCountry")'>Switzerland</button>
-    <button onclick='setFilter(["Belgium"],"ShipCountry")'>Belgium</button>
-    <button onclick='setFilter(["Brazil"],"ShipCountry")'>Brazil</button>
-    <button onclick='setFilter(["Germany","Brazil"],"ShipCountry")'>Germany+>Brazil</button>
+
 
     <button onclick='clearFilter()'>FilterClear</button>
-    <button onclick="Edit()">редактировать</button>
-    <div class="filter-container">
-        <div id="filterBuilder"></div>
-        <div id="apply"></div>
-        <div class="dx-clearfix"></div>
-    </div>
-    <br />
+   
     <div id="filter"></div>
     <div id="grid"></div>
 </body>
 <script>
  DevExpress.localization.locale(navigator.language);
- 
-    
-    function setFilter(valueAr,fieldName) {
-       var oldFilter = dataGrid.getCombinedFilter();
-        var filter = FilterHelper.ApplyInCon(oldFilter, fieldName, valueAr)
+     
 
-        dataGrid.filter(filter);
-        dataGrid.refresh();
-        console.time("x");
-    }
-
-    
+    var Filter;
     var filterInit = false;
 
     function HideFilter() {
@@ -80,13 +60,11 @@
         if (filterInit == false) {
             filterInit = true;
             dataGrid = $('#grid').dxDataGrid('instance');
-            filerElem = document.getElementById("filter")
-            filerElem= new FilterElements(dataGrid,filerElem);
+         var filerElem = document.getElementById("filter")
+            Filter = new FilterElements(dataGrid,filerElem);
             console.dir(colunmDescription);
-            filerElem.CreateFilter( colunmDescription);
-        } else {
-    
-          filerElem.SetCombinedFilter();
+            Filter.CreateFilter( colunmDescription);
+
         }
         var modal = document.getElementById('filterPopup');
         modal.style.display = "block";
@@ -94,7 +72,7 @@
     }
 
     function FilterFind() {
-        filerElem.FilterFind();
+        Filter.FilterFind();
     } 
 
     function clearFilter() {
@@ -102,6 +80,7 @@
 
           dataGrid.refresh()
     }
+    
     var dataGrid = $('#grid').dxDataGrid('instance');
 </script>
 </html>

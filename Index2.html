@@ -12,7 +12,7 @@
     <script src="Scripts/dx.aspnet.data.js"></script>-->
     <script src="https://cdn3.devexpress.com/jslib/19.2.6/js/dx.all.js"></script>
     <script src="js/code2.js"></script>
-    <script src="js/filter.js"></script>
+    <script src="js/FilterHelper.js"></script>
     <!-- <script src="js/FilterControls.js"></script> -->
     <script src="js/data.js"></script>
 
@@ -51,12 +51,11 @@
         <option>Germany</option>
         <option>Finland</option>
         <option>Finland</option>
-    </select><button onclick='setFilterFrom()'>Find</button>
+    </select><button onclick='FindFromFilter()'>Find</button>
     <br />
     <br />
     <button onclick="ShowFilter()">CreateFilter</button>
-    <button onclick="StrFilter()">Filter str</button>
-    
+
     <button onclick='setFilter(["Switzerland"],"ShipCountry")'>Switzerland</button>
     <button onclick='setFilter(["Belgium"],"ShipCountry")'>Belgium</button>
     <button onclick='setFilter(["Brazil"],"ShipCountry")'>Brazil</button>
@@ -76,20 +75,28 @@
 </body>
 <script>
     DevExpress.localization.locale(navigator.language);
-    
-    function setFilterFrom() {
+
+    function FindFromFilter() {
         var filter = dataGrid.getCombinedFilter();
 
-        var filterText = $('#filterID').val();
-         filter =FilterHelper.GetFilterFromText("OrderID",filterText,filter)
-         
-         valueAr = $('#filterCountry').val();
-         filter = FilterHelper.GetFilterFromArr("ShipCountry",valueAr,filter);
-        
-         filter =  dataGrid.option("filterValue", filter);
+        var check = $('#filterIDChe').prop("checked");
+        var filterText = '';
+        if (check) {
+             filterText = $('#filterID').val();
+        }
+        filter = FilterHelper.GetFilterFromText("OrderID", filterText, filter)
+
+        var check = $('#filterCountryChe').prop("checked");
+        var valueAr = [];
+        if (check) {
+            valueAr = $('#filterCountry').val();
+        }
+        filter = FilterHelper.GetFilterFromArr("ShipCountry", valueAr, filter);
+
+        dataGrid.option("filterValue", filter);
         $('#filterDiscr').val(filter);
 
-    
+
     }
 
     function setFilter(valueAr, fieldName) {
@@ -97,7 +104,7 @@
         var filter = FilterHelper.ApplyInCon(oldFilter, fieldName, valueAr)
 
 
-       dataGrid.option("filterValue", filter);
+        dataGrid.option("filterValue", filter);
         console.time("x");
 
         $('#filterDiscr').val(filter);

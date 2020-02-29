@@ -1,5 +1,5 @@
 
-//объект который содержит данные о гриде
+//РѕР±СЉРµРєС‚ РєРѕС‚РѕСЂС‹Р№ СЃРѕРґРµСЂР¶РёС‚ РґР°РЅРЅС‹Рµ Рѕ РіСЂРёРґРµ
 function FilterField(dataGridColumn, input, checkBox, condition = '=') {
     this.column = dataGridColumn;
     this.DataField = dataGridColumn.dataField;
@@ -10,25 +10,23 @@ function FilterField(dataGridColumn, input, checkBox, condition = '=') {
     this.Input.onkeyup = ValueChanged;
     this.CheckBox = checkBox;
     this.CheckBox.Tag = this;
-    this.ApplayFilter = ApplayFilter;//function применить фильтр
-    this.ChangeChecked = ChangeChecked;//function изменилась галочка
+    this.ApplayFilter = ApplayFilter;//function РїСЂРёРјРµРЅРёС‚СЊ С„РёР»СЊС‚СЂ
+    this.ChangeChecked = ChangeChecked;//function РёР·РјРµРЅРёР»Р°СЃСЊ РіР°Р»РѕС‡РєР°
     function ApplayFilter(collectiveFilter) {
+        var val='';
         if (checkBox.checked) {
-            filter = new Array();
-            var val = this.Input.value;
-            switch (this.DataType) {
-                case 'number': {
-                    if (val.includes(',')) {
-                        filter.push(filterCommaSplittedCodition(this.DataField, val));
-                    }
-                    else { filter.push([this.DataField, '=', val]); }
-                } break;
-                case 'string': { filter.push([this.DataField, 'contains', val]); }
+
+            val = this.Input.value;
+           switch (this.DataType) {
+              case 'number': { }       
+              break;
+              case 'string': { }
+              break;
             }
-            collectiveFilter.push(filter);
         }
+        return FilterHelper.GetFilterFromText(this.DataField, val, collectiveFilter)
     }
-    //разделение по значения фильтра по запятым
+    //СЂР°Р·РґРµР»РµРЅРёРµ РїРѕ Р·РЅР°С‡РµРЅРёСЏ С„РёР»СЊС‚СЂР° РїРѕ Р·Р°РїСЏС‚С‹Рј
     function filterCommaSplittedCodition(dataField, inpVal) {
         inpVal = inpVal.replace(/\s/g, '').replace(/,+/g, ',');//remove repeated commas and spaces
         var arr = inpVal.split(',');
@@ -70,20 +68,20 @@ function FilterElements(datagrid, fe) {
     this.dataGrid = datagrid;
     this.filtElem = fe;
     this.CreateFilter = CreateFilter;
-    this.SetCombinedFilter = SetCombinedFilter;
+  //  this.SetCombinedFilter = SetCombinedFilter;
     this.ClearFilter = ClearFilter;
     this.FilterFind = FilterFind;
-    this.SetOldFilter = SetOldFilter;
+  //  this.SetOldFilter = SetOldFilter;
 
-    //массив элементов фильтра
+    //РјР°СЃСЃРёРІ СЌР»РµРјРµРЅС‚РѕРІ С„РёР»СЊС‚СЂР°
     this.FilterElementsArray = new Array();
-    //поиск в массиве элементов по имени поля данных
+    //РїРѕРёСЃРє РІ РјР°СЃСЃРёРІРµ СЌР»РµРјРµРЅС‚РѕРІ РїРѕ РёРјРµРЅРё РїРѕР»СЏ РґР°РЅРЅС‹С…
     function FindFilterElementsByDateField(dataField) {
         for (i = 0; i < this.FilterElementsArray.length; i++) {
             if (this.FilterElementsArray[i].DataField == dataField) { return this.FilterElementsArray[i] }
         }
     }
-    //Функция создания фильтра
+    //Р¤СѓРЅРєС†РёСЏ СЃРѕР·РґР°РЅРёСЏ С„РёР»СЊС‚СЂР°
     function CreateFilter(columns) {
         //  var filtElem = document.getElementById(id);
         this.filtElem.childNodes.length = 0;
@@ -136,16 +134,17 @@ function FilterElements(datagrid, fe) {
         findButton = document.createElement("button");
         findButton.setAttribute('onclick', 'FilterFind()');
         findButton.setAttribute('class', 'float-right');
-        findButton.textContent = 'Найти';
+        findButton.textContent = 'РќР°Р№С‚Рё';
         createTableCell(row);// create 2 empty cell
         createTableCell(row);
         createTableCell(row, findButton);//put button in 3 cell
 
-        SetCombinedFilter();
+        //SetCombinedFilter();
         //oldGridFilter = dataGridInstance.getCombinedFilter();
         //if (oldGridFilter != undefined) {
-        //    SetOldFilter(oldGridFilter);
+        //SetOldFilter(oldGridFilter);
         //}
+
         function createTableCell(row, el) {
             td = document.createElement("td");
             if (el != null) { td.appendChild(el); }
@@ -153,41 +152,43 @@ function FilterElements(datagrid, fe) {
             return td;
         }
     }
-    //установка готового фильтра
-    function SetCombinedFilter() {
-        var oldGridFilter = this.dataGrid.getCombinedFilter();
-        if (oldGridFilter != undefined) {
-            SetOldFilter(oldGridFilter);
-        }
-    }
-    //установка предыдущего значения фильтра 
-    function SetOldFilter(oldGridFilter) {
-        if (oldGridFilter === undefined) return;
 
-        const first = oldGridFilter[0];
-        const condition = oldGridFilter[1];
-        const val = oldGridFilter[2];
-        if (typeof first === 'string') {//Если это не массив то имя поля то бишь строка
-            var ff = FindFilterElementsByDateField(first);//Нашел соответствующий ей элемент в массиве
-            if (ff != undefined) {
-                ff.Input.Condition = condition;//условие
-                if (ff.Input.value == "") { ff.Input.value = val; }
-                else {
-                    ff.Input.value += ',' + val;
-                }
-                ff.ChangeChecked();
-            } else {
-                console.error("не найдено свойство " + first);
-            }
-        }
-        else {
-            oldGridFilter.forEach(element => {
-                if (typeof element != 'string') { SetOldFilter(element); }
-            });
+ //   СѓСЃС‚Р°РЅРѕРІРєР° РіРѕС‚РѕРІРѕРіРѕ С„РёР»СЊС‚СЂР°
+ //   function SetCombinedFilter() {
+ //       var oldGridFilter = this.dataGrid.getCombinedFilter();
+ //       if (oldGridFilter != undefined) {
+ //           SetOldFilter(oldGridFilter);
+ //       }
+ //   }
+
+    // //СѓСЃС‚Р°РЅРѕРІРєР° РїСЂРµРґС‹РґСѓС‰РµРіРѕ Р·РЅР°С‡РµРЅРёСЏ С„РёР»СЊС‚СЂР° 
+    // function SetOldFilter(oldGridFilter) {
+    //     if (oldGridFilter === undefined) return;
+
+    //     const first = oldGridFilter[0];
+    //     const condition = oldGridFilter[1];
+    //     const val = oldGridFilter[2];
+    //     if (typeof first === 'string') {//Р•СЃР»Рё СЌС‚Рѕ РЅРµ РјР°СЃСЃРёРІ С‚Рѕ РёРјСЏ РїРѕР»СЏ С‚Рѕ Р±РёС€СЊ СЃС‚СЂРѕРєР°
+    //         var ff = FindFilterElementsByDateField(first);//РќР°С€РµР» СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РёР№ РµР№ СЌР»РµРјРµРЅС‚ РІ РјР°СЃСЃРёРІРµ
+    //         if (ff != undefined) {
+    //             ff.Input.Condition = condition;//СѓСЃР»РѕРІРёРµ
+    //             if (ff.Input.value == "") { ff.Input.value = val; }
+    //             else {
+    //                 ff.Input.value += ',' + val;
+    //             }
+    //             ff.ChangeChecked();
+    //         } else {
+    //             console.error("РЅРµ РЅР°Р№РґРµРЅРѕ СЃРІРѕР№СЃС‚РІРѕ " + first);
+    //         }
+    //     }
+    //     else {
+    //         oldGridFilter.forEach(element => {
+    //             if (typeof element != 'string') { SetOldFilter(element); }
+    //         });
 
 
-        }
-    }
+    //     }
+    // }
 
 
     function ClearFilter() {
@@ -200,25 +201,12 @@ function FilterElements(datagrid, fe) {
 
     //Find by Filter
     function FilterFind() {
-        collectiveFilter = new Array();
-        var dataGrid = $("#grid").dxDataGrid("instance");
+        collectiveFilter = dataGrid.getCombinedFilter();
         for (i = 0; i < this.FilterElementsArray.length; i++) {
-
-            this.FilterElementsArray[i].ApplayFilter(collectiveFilter);
+            collectiveFilter=   this.FilterElementsArray[i].ApplayFilter(collectiveFilter);
         }
-        if (collectiveFilter.length > 0) {
-            resultFilter = new Array();
-            for (i = 0; i < collectiveFilter.length; i++) {
-                resultFilter.push(collectiveFilter[i]);
-                if (collectiveFilter.length > i + 1) {
-                    resultFilter.push('and');
-                }
-
-            }
-            dataGrid.filter(resultFilter);
-        }
-        dataGrid.refresh();
-        console.time("x");
+        
+        dataGrid.option("filterValue", collectiveFilter);
     }
 
 }
